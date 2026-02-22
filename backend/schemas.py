@@ -64,7 +64,6 @@ class userReturn(BaseModel):
         for role in roles:
             if not data.get(role):
                 data.pop(role, None)
-
         return data
     
 class userUpdate(userCreate):

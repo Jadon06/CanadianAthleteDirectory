@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException, status
 from beanie.odm.operators.update.general import Set
+from typing import List
 from .. import schemas, models
-from ..utils import recommendation_system
+from ..utils import Search_system
 
 router = APIRouter(
     prefix="/users",
@@ -26,13 +27,9 @@ async def update_user(updated_user: schemas.userUpdate):
     await user.save()
     return user
 
-@router.get("/{first_name}:{last_name}")
+@router.get("/{first_name}:{last_name}", response_model=List[schemas.userReturn])
 async def get_user(first_name: str, last_name: str):
-    user = await models.users.find_one(models.users.first_name == first_name, models.users.last_name == last_name)
-    results = await recommendation_system.recommendations(first_name, last_name)
-    if not user:
+    results = await Search_system.recommendations(first_name, last_name)
+    if not results:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="user not found!")
-    return user
-
-# @router.delete("/")
-# async def delete_user():
+    return results
