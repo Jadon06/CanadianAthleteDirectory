@@ -70,6 +70,10 @@ class userReturn(BaseModel):
 class userUpdate(userCreate):
     pass
 
+class verificationRequest(BaseModel):
+    email: EmailStr
+    code: int
+
 class Token(BaseModel):
     access_token: str
     token_type: str

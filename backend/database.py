@@ -6,4 +6,4 @@ connection_string = f"mongodb://mongodb-local:27017/users"
 
 async def init_db():
     client = AsyncIOMotorClient(connection_string)
-    await init_beanie(database=client["localdb"], document_models=[models.users]) 
+    await init_beanie(database=client["localdb"], document_models=[models.users])

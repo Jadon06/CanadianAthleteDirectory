@@ -43,6 +43,10 @@ async def recommendations(first_name: str, last_name: str):
     num_users = normalized_matrix.shape[0]
     distances, indices = knn.kneighbors(query_vector, n_neighbors=num_users)
 
-    users = [user_list[i] for i in indices[0]]
-    
-    return users
+    exact_match = [user_list[i] for i in indices[0]]
+    fn_match = [user_list[i] for i in indices[1]]
+    ln_match = [user_list[i] for i in indices[2]]
+
+    results = exact_match+fn_match+ln_match
+    return results
+

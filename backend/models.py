@@ -3,6 +3,9 @@ from pydantic import BaseModel, EmailStr, BeforeValidator, Field, ConfigDict
 from typing import Optional, Annotated, List, Literal, Dict
 from functools import partial
 from datetime import datetime, timezone
+from redis_om import JsonModel, HashModel
+
+from .redis import redis_async
 
 from . import schemas
 
@@ -25,3 +28,22 @@ class users(Document):
     class Settings:
         name = "Users"
 
+class pending_users(HashModel, index=True):
+    Athlete: Optional[bool] = False
+    Coach: Optional[bool] = False
+    Scout: Optional[bool] = False
+    first_name: str
+    last_name: str
+    email: EmailStr
+    password: str
+    phone_number: Optional[int] = None
+    headline: Optional[str] = None
+    education: Optional[schemas.Education] = None
+    about: Optional[str] = None
+    highlights: Optional[schemas.highlight] = None
+    upcoming_events: Optional[schemas.upcoming_event] = None
+    interests: Optional[str] = None
+    code: int
+
+    class Meta:
+        database = redis_async
