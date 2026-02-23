@@ -34,6 +34,7 @@ class userCreate(BaseModel):
     last_name: str
     email: EmailStr
     phone_number: int
+    password: str
     headline: str = None
     education: Optional[Education] = None
     about: str = None
@@ -68,3 +69,12 @@ class userReturn(BaseModel):
     
 class userUpdate(userCreate):
     pass
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    email: Optional[EmailStr] = None

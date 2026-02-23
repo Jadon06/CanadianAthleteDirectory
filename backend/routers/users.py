@@ -1,7 +1,7 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Depends
 from beanie.odm.operators.update.general import Set
 from typing import List
-from .. import schemas, models
+from .. import schemas, models, oauth2
 from ..utils import Search_system
 
 router = APIRouter(
@@ -19,7 +19,7 @@ async def create_user(user_info: schemas.userCreate):
     return new_user
 
 @router.put("/")
-async def update_user(updated_user: schemas.userUpdate):
+async def update_user(updated_user: schemas.userUpdate, current_user = Depends(oauth2.get_current_user)):
     user = await models.users.find_one(models.users.email == updated_user.email)
     data = updated_user.model_dump(exclude_unset=True)
     for field, value in data.items():

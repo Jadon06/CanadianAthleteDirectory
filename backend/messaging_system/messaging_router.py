@@ -9,12 +9,12 @@ router = APIRouter(
     tags=["Messages"]
 )
 
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory="frontend")
 
 @router.get("/", response_class=HTMLResponse)
 def read_index(request: Request):
     # Render the HTML template
-    return templates.TemplateResponse("index.html", {"request" : request})
+    return templates.TemplateResponse("messaging.html", {"request" : request})
 
 @router.websocket("/ws/{client_id}")
 async def websocket_endpoint(websocket: WebSocket, client_id: int):

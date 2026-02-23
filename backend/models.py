@@ -13,6 +13,7 @@ class users(Document):
     first_name: str
     last_name: str
     email: EmailStr
+    password: str
     phone_number: Optional[int] = None
     headline: Optional[str] = None
     education: Optional[schemas.Education] = None
