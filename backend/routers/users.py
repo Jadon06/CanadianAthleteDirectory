@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, status, Depends
 from beanie.odm.operators.update.general import Set
 from typing import List
 from .. import schemas, models, oauth2
-from ..utils import Search_system
+from ..utils import Search_system, email_verification
 
 router = APIRouter(
     prefix="/users",
@@ -15,6 +15,12 @@ async def create_user(user_info: schemas.userCreate):
     if exists:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"User with email:{user_info.email} already exists!")
     new_user = models.users(**user_info.dict())
+    
+    verification_code = email_verification.verification_code()
+    email_verification.send_verification_email(user_info.email, verification_code)
+    if not email_verification.verify_code(verification_code):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="code incorrect!!")
+    
     await models.users.insert(new_user)
     return new_user
 

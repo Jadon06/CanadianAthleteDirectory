@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, status, HTTPException, Response
 from .. import models, utils, schemas, oauth2
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
-from ..utils import helpers
+from ..utils import auth_helpers
 
 router = APIRouter(tags=["Authentication"])
 
@@ -10,7 +10,7 @@ async def login(user_credentials: OAuth2PasswordRequestForm = Depends()):
     user = await models.users.find_one(models.users.first_name == user_credentials.username)
     if not user:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid email or password!")
-    if not helpers.verify(user_credentials.password, user.password):
+    if not auth_helpers.verify(user_credentials.password, user.password):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid email or password!")
     # create a token
     # return the token for login
