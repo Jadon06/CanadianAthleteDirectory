@@ -27,7 +27,7 @@ services:
     restart: always
     
   redis-local:
-    image: redis:latest
+    image: redis/redis-stack:latest
     container_name: redis-local
     ports:
       - "6379:6379"

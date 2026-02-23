@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 from .database import init_db
 from .routers import users
 from .messaging_system import messaging_router
+from . import models
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

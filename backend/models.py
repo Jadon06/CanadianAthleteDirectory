@@ -1,11 +1,11 @@
 from beanie import Document, PydanticObjectId
-from pydantic import BaseModel, EmailStr, BeforeValidator, Field, ConfigDict
+from pydantic import BaseModel, EmailStr, BeforeValidator, ConfigDict
 from typing import Optional, Annotated, List, Literal, Dict
 from functools import partial
 from datetime import datetime, timezone
-from redis_om import JsonModel, HashModel
+from redis_om import HashModel, Field, Migrator
 
-from .redis import redis_async
+from .redis import redis_sync
 
 from . import schemas
 
@@ -34,7 +34,7 @@ class pending_users(HashModel, index=True):
     Scout: Optional[bool] = False
     first_name: str
     last_name: str
-    email: EmailStr
+    email: EmailStr = Field(primary_key=True)
     password: str
     phone_number: Optional[int] = None
     headline: Optional[str] = None
@@ -46,4 +46,6 @@ class pending_users(HashModel, index=True):
     code: int
 
     class Meta:
-        database = redis_async
+        database = redis_sync
+
+Migrator().run()
