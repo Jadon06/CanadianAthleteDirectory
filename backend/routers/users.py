@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException, status, Depends
 from beanie.odm.operators.update.general import Set
 from typing import List
-from .. import schemas, models, oauth2, redis
-from ..utils import Search_system, email_verification
+from .. import schemas, models, oauth2
+from ..utils import Search_system, email_verification, auth_helpers
 from dotenv import load_dotenv
 import os
 
@@ -21,6 +21,7 @@ async def create_user(user_info: schemas.userCreate):
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"User with email:{user_info.email} already exists!")
     verification_code = email_verification.verification_code()
     pending_user = models.pending_users(**user_info.dict(), code=verification_code)
+    pending_user.password = auth_helpers.hash(pending_user.password)
     pending_user.save()
     email_verification.send_verification_email(user_info.email, verification_code)
     return {"status" : "verify email"}
@@ -41,7 +42,7 @@ async def verify_and_create_user(verification_request: schemas.verificationReque
 
 @router.put("/")
 async def update_user(updated_user: schemas.userUpdate, current_user = Depends(oauth2.get_current_user)):
-    user = await models.users.find_one(models.users.email == updated_user.email)
+    user = await models.users.find_one(models.users.email == current_user.email)
     data = updated_user.model_dump(exclude_unset=True)
     for field, value in data.items():
         setattr(user, field, value)
@@ -49,8 +50,13 @@ async def update_user(updated_user: schemas.userUpdate, current_user = Depends(o
     return user
 
 @router.get("/{first_name}:{last_name}", response_model=List[schemas.userReturn])
-async def get_user(first_name: str, last_name: str):
+async def get_user(first_name: str, last_name: str, logged_in: int = Depends(oauth2.get_current_user)):
     results = await Search_system.recommendations(first_name, last_name)
     if not results:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="user not found!")
     return results
+
+@router.delete("/", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_user(current_user: int = Depends(oauth2.get_current_user)):
+    user = models.users.find_one(models.users.email == current_user.email)
+    await models.users.delete(user)
