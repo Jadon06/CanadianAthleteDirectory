@@ -40,3 +40,36 @@
 .read-the-docs {
   color: #888;
 }
+
+.center-grid {
+  display: grid;
+  place-items: center;
+  height: 80vh;
+  text-align: center;
+}
+
+.button-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* space between buttons */
+  align-items: center; /* optional: centers them horizontally */
+  margin-bottom: 40px;
+}
+
+.label-input-form-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px; /* space between buttons */
+  width: 100%;
+  /* justify-content: center; /* optional: centers them horizontally */
+  /* align-items: center; */ 
+  /* margin-bottom: 2px; */
+}
+
+.label-input-form-row {
+  display: flex;
+  flex-direction: row;
+  gap: 10px; /* space between buttons */
+  /* justify-content: center; optional: centers them horizontally */
+  /* margin-bottom: 0px; */
+}
