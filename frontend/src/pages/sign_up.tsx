@@ -1,16 +1,18 @@
+import React, { Fragment } from "react"
+import { Navbar, Nav, Button, Carousel, Row, Col, ButtonGroup, Table } from 'react-bootstrap';
+
 export default function Sign_up() {
     return (
-        <div>
-            <div className="center-grid">
-                <h1>Sign Up Now</h1>
-                <div className="label-input-form-row">    
-                    <label htmlFor="email">Email</label>
-                    <input id="email" type="email" />
+        <Fragment>
+            <Table >
+                <thead style={{borderColor: 'white'}}>
+                    <th className="vertical-table-container">First Name</th>
+                    <th className="vertical-table-container">Last Name</th>
+                    <th>Email</th>
+                    <th>Phone Number</th>
 
-                    <label htmlFor="First Name">First Name</label>
-                    <input id="First Name" type="string" />
-                </div>
-            </div>
-        </div>
+                </thead>
+            </Table>
+        </Fragment>
     );
 }

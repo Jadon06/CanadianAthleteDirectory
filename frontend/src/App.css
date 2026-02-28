@@ -41,35 +41,27 @@
   color: #888;
 }
 
-.center-grid {
-  display: grid;
-  place-items: center;
-  height: 80vh;
-  text-align: center;
+.rounded.btn {
+  border-radius: 3px;
+  margin: 0 4px;
 }
 
-.button-column {
-  display: flex;
-  flex-direction: column;
-  gap: 12px; /* space between buttons */
-  align-items: center; /* optional: centers them horizontally */
-  margin-bottom: 40px;
+.hyperlink.btn:hover {
+  border-color: inherit;
+  text-decoration: underline !important;
+  text-decoration-color: currentColor !important;
+  background-color: inherit;
+  background: inherit;
 }
 
-.label-input-form-col {
-  display: flex;
-  flex-direction: column;
-  gap: 2px; /* space between buttons */
+.carousel-settings {
   width: 100%;
-  /* justify-content: center; /* optional: centers them horizontally */
-  /* align-items: center; */ 
-  /* margin-bottom: 2px; */
+  object-fit: cover;
 }
 
-.label-input-form-row {
+.vertical-table-container th,
+.vertical-table-container tbody,
+.vertical-table-container tr {
   display: flex;
-  flex-direction: row;
-  gap: 10px; /* space between buttons */
-  /* justify-content: center; optional: centers them horizontally */
-  /* margin-bottom: 0px; */
+  flex-direction: column; /* Stacks header/body and rows vertically */
 }

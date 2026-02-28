@@ -2,6 +2,8 @@ import { Routes, Route } from "react-router-dom"
 import Home from "./pages/home"
 import Sign_up from "./pages/sign_up"
 import Sign_in from "./pages/sign_in"
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 import "./App.css"
 
