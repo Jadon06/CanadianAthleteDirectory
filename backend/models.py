@@ -6,7 +6,7 @@ from functools import partial
 from redis_om import HashModel, Field, Migrator
 from fastapi import File, UploadFile, HTTPException, status
 
-from .redis import redis_sync
+from .redis_db import redis_sync
 
 from . import schemas
 

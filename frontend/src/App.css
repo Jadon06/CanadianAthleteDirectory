@@ -59,9 +59,12 @@
   object-fit: cover;
 }
 
-.vertical-table-container th,
-.vertical-table-container tbody,
-.vertical-table-container tr {
-  display: flex;
-  flex-direction: column; /* Stacks header/body and rows vertically */
+.input-settings {
+  margin-bottom: 12px;
+  border: 1px solid black;
+}
+
+.dropdown-settings {
+  width: 150px;
+  color: inherit;
 }

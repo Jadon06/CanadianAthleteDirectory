@@ -1,4 +1,3 @@
-from redis import asyncio as aioredis
 from redis_om import get_redis_connection
 
 redis_sync = get_redis_connection(

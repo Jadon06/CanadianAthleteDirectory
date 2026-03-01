@@ -20,13 +20,16 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "5173:5173"
     depends_on:
       - mongodb-local
       - redis-local
       - api
+    environment:            
+      - CHOKIDAR_USEPOLLING=true
     volumes:
-      - ./frontend:/usr/src/frontend/frontend
+      - ./frontend:/usr/src/frontend
+      - /usr/src/frontend/node_modules
   
   mongodb-local:
     image: mongodb/mongodb-atlas-local

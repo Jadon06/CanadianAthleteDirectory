@@ -50,8 +50,8 @@ async def update_user(updated_user: schemas.userUpdate, current_user = Depends(o
     return user
 
 @router.get("/{first_name}:{last_name}", response_model=List[schemas.userReturn])
-async def get_user(first_name: str, last_name: str, logged_in: int = Depends(oauth2.get_current_user)):
-    results = await Search_system.recommendations(first_name, last_name)
+async def get_user(first_name: str, last_name: str, current_user: int = Depends(oauth2.get_current_user)):
+    results = await Search_system.recommendations(first_name, last_name, current_user)
     if not results:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="user not found!")
     return results
