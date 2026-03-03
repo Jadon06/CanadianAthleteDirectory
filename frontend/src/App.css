@@ -54,6 +54,13 @@
   background: inherit;
 }
 
+.normal-button.btn:hover {
+  border-color: inherit;
+  text-decoration-color: currentColor !important;
+  background-color: inherit;
+  background: inherit;
+}
+
 .carousel-settings {
   width: 100%;
   object-fit: cover;
@@ -67,4 +74,10 @@
 .dropdown-settings {
   width: 150px;
   color: inherit;
+}
+
+.nav-settings {
+  color: inherit;
+  font-weight: 100px;
+  text-decoration: underline;
 }
