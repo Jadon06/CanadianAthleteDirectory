@@ -3,7 +3,12 @@
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  --navbar-height: 64px;
 }
+
+/* body {
+  padding-top: 64px;
+} */
 
 .logo {
   height: 6em;
@@ -76,8 +81,15 @@
   color: inherit;
 }
 
-.nav-settings {
-  color: inherit;
-  font-weight: 100px;
+.sticky-bar {
+  position: sticky;
+  top: 0; /* Stays at 0px from the top of the viewport once it reaches that position */
+  background-color: #f1f1f1;
+  padding: 10px;
+  z-index: 100; /* Ensure it layers above other content */
+  width: 100%;
+}
+
+.nav-link-underline:hover {
   text-decoration: underline;
 }

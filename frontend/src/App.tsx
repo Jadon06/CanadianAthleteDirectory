@@ -4,6 +4,7 @@ import Sign_up from "./pages/sign_up"
 import Login from "./pages/login.tsx"
 import Verify from "./pages/verify.tsx"
 import Feed from "./pages/feed.tsx"
+import Profile from "./pages/profile.tsx"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 
@@ -17,6 +18,7 @@ function App() {
       <Route path="/login/" element={<Login />} />
       <Route path="/verify" element={<Verify />}/>
       <Route path="/feed" element={<Feed />}/>
+      <Route path="/profile" element={<Profile />}/>
     </Routes>
   )
 }
