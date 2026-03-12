@@ -38,8 +38,8 @@ export default function Sign_up() {
     };
     
     const CreateUser =  async () => {
-        const response = await fetch('http://localhost:8001/users/', 
-            {method: 'POST',
+        const response = await fetch('http://localhost:8001/users/', {
+            method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(newUser)  
         })

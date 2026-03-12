@@ -93,3 +93,57 @@
 .nav-link-underline:hover {
   text-decoration: underline;
 }
+
+.headProfile-container {
+  width: 600px; 
+  height: 250px; 
+  border: 1px solid black;
+  flex-Direction: column;
+  display: flex;
+  border-Radius: 20px;
+}
+
+.buttonbar-button {
+  background-color: white !important;
+  color: red !important;
+  /* border: 1px solid black !important; */
+  margin-bottom: 10px;
+  height: 50px;
+  width: 50px;
+  cursor: pointer; 
+  margin-Left: 11px;
+}
+
+.buttonbar-button:hover {
+  background-color: lightgray !important;
+  color: red !important;
+  /* border: 1px solid black !important; */
+}
+
+.edit-button {
+  width: 30px;
+  height: 30px;
+  border-Radius: 10px;
+  background: inherit;
+  /* border: 1px solid black; */
+  color: black; 
+  position: absolute;
+  right: 10px; 
+  top: 10px;
+  cursor: pointer;
+}
+
+.edit-button:hover {
+  background-color: lightgray !important;
+  color: black !important;
+  /* border: 1px solid black !important; */
+}
+
+.pfp-img {
+  border: 1px solid black;
+  border-Radius: 100px; 
+  display: block;
+  width: 100px;
+  height: 100px; 
+  margin-Top: 10px;
+}
