@@ -19,26 +19,13 @@ async def create_user(user_info: schemas.userCreate):
     exists = await models.users.find_one(models.users.email == user_info.email)
     if exists:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"User with email:{user_info.email} already exists!")
-    verification_code = email_verification.verification_code()
-    pending_user = models.pending_users(**user_info.dict(), code=verification_code)
+    verification_token = email_verification.verification_token({'email' : user_info.email})
+    pending_user = models.pending_users(**user_info.dict())
     pending_user.password = auth_helpers.hash(pending_user.password)
     pending_user.save()
-    email_verification.send_verification_email(user_info.email, verification_code)
+    pending_user.expire(1800)
+    email_verification.send_verification_email(user_info.email, verification_token)
     return {"status" : "verify email"}
-
-@router.post("/verify")
-async def verify_and_create_user(verification_request: schemas.verificationRequest):
-    pending = models.pending_users.find(models.pending_users.email == verification_request.email).first()
-    print(pending)
-    if not pending:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, 
-                            detail="Pending user not found!!")
-    if verification_request.code != pending.code:
-        raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE,
-                             detail="verification code expired or incorrect!!")
-    new_user = models.users(**pending.dict())
-    await models.users.insert(new_user)
-    return new_user
 
 @router.put("/")
 async def update_user(updated_user: schemas.userUpdate, current_user = Depends(oauth2.get_current_user)):

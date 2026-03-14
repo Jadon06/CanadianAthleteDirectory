@@ -11,9 +11,6 @@ from .redis_db import redis_sync
 from . import schemas
 
 class users(Document):
-    Athlete: Optional[bool] = False
-    Coach: Optional[bool] = False
-    Scout: Optional[bool] = False
     first_name: str
     last_name: str
     email: EmailStr
@@ -25,14 +22,12 @@ class users(Document):
     highlights: Optional[schemas.highlight] = None
     upcoming_events: Optional[schemas.upcoming_event] = None
     interests: Optional[str] = None
+    stats: Optional[str] = None
 
     class Settings:
         name = "Users"
 
 class pending_users(HashModel, index=True):
-    Athlete: Optional[bool] = False
-    Coach: Optional[bool] = False
-    Scout: Optional[bool] = False
     first_name: str
     last_name: str
     email: EmailStr = Field(primary_key=True)
@@ -43,7 +38,7 @@ class pending_users(HashModel, index=True):
     about: Optional[Annotated[str, StringConstraints(max_length=400)]] = None
     upcoming_events: Optional[schemas.upcoming_event] = None
     interests: Optional[str] = None
-    code: int
+    stats: Optional[str] = None
 
     class Meta:
         database = redis_sync

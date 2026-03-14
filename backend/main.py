@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from .database import init_db
 from .routers import users, auth, highlights
-from .messaging_system import messaging_router
+# from .messaging_system import messaging_router
 from . import models
 
 @asynccontextmanager
@@ -21,6 +21,6 @@ app.add_middleware(
 )
 
 app.include_router(users.router)
-app.include_router(messaging_router.router)
+# app.include_router(messaging_router.router)
 app.include_router(auth.router)
 app.include_router(highlights.router)

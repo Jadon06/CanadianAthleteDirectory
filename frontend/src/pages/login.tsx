@@ -1,7 +1,7 @@
 import { Button, InputGroup, Card} from 'react-bootstrap';
 import { useState } from 'react';
 import Form from 'react-bootstrap/Form';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Alert from 'react-bootstrap/Alert';
 
 interface credentials {
@@ -24,10 +24,13 @@ export default function Login() {
     };
 
     const login_user = async() => {
-        const response = await fetch('http://localhost:8001/login/${token}',
+        const response = await fetch('http://localhost:8001/login/',
             {method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(credentials)  
+            headers: {'Content-Type': "application/x-www-form-urlencoded"},
+            body: new URLSearchParams({
+                username: credentials["username"],
+                password: credentials["password"]
+                })
             })
         if (!response.ok) {
             const data = await response.json()
@@ -47,7 +50,13 @@ export default function Login() {
     return (
         <>
             <Card style={{border: "1px solid black"}}>
-                <h1 style={{marginBottom: "30px"}}>Login</h1>
+                <div className="center-container">
+                    <img 
+                        src='Logo.png'
+                        height={"150px"}
+                        width={"150px"}
+                    />
+                </div>
 
                 <InputGroup className="input-settings">
                         <InputGroup.Text id="email">Email</InputGroup.Text>
@@ -67,9 +76,12 @@ export default function Login() {
                             onChange={e => handleChange("password", e.target.value)}
                         />
                     </InputGroup>
-
-                <Button variant='light' className='normal-button' onClick={handleClick} style={{marginTop: "30px", fontSize: "20px"}}
-                >login</Button>
+                <div className="center-container">
+                    <Button variant='light' className='normal-button' onClick={handleClick} 
+                    style={{marginTop: "30px", fontSize: "20px", width: "100px"}}>
+                        login
+                    </Button>
+                </div>
             </Card>
 
             {loginError && (

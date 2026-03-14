@@ -12,6 +12,7 @@ function EditUpcomingEvents({ show, onHide } : EditUpcomingEventsProps) {
     const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
     const handleChange = (date: Date | null) => {
         setSelectedDate(date);
+        onHide;
     };
 
     return (
@@ -35,21 +36,16 @@ function EditUpcomingEvents({ show, onHide } : EditUpcomingEventsProps) {
                 </InputGroup>
                 <InputGroup style={{marginBottom: "10px"}}>
                     <InputGroup.Text>Select Date</InputGroup.Text>
-                    <div style={{ flex: 1 }}>
+                    <div style={{ display: "inline-block" }}>
                         <DatePicker
-                            selected={selectedDate}
-                            onChange={handleChange}
                             className="form-control"
-                            popperPlacement="bottom-start"
-                            popperModifiers={[
-                                {
-                                name: "offset",
-                                options: { offset: [0, 8] }
-                                } as any
-                            ]}
+                            selected={selectedDate}
+                            onChange={(date: Date | null) => setSelectedDate(date)}
+                            dateFormat="MM/dd/yyyy" // Optional: customize the date format
                         />
                     </div>
                 </InputGroup>
+                <Button onClick={onHide} style={{position: "absolute", bottom: "5px", right: "5px"}}>Done</Button>
             </Modal.Body>
         </Modal>
         </>

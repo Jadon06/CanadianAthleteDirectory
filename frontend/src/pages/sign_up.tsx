@@ -45,6 +45,7 @@ export default function Sign_up() {
         })
         if (!response.ok) {
             const data = await response.json()
+            console.log("done")
             setUserExistsError(data.detail)
             return;
         }

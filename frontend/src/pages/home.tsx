@@ -11,10 +11,10 @@ export default function Home() {
             <h3 style={{fontSize: 22}}>Where Atheletes go Pro</h3>
 
             <ButtonGroup vertical style={{gap: "10px", marginBottom: "100px"}} className="rounded">
-                <Button href="Sign-up" variant="secondary" style={{backgroundColor: "inherit", 
+                <Button href="sign-up" variant="secondary" style={{backgroundColor: "inherit", 
                     color: "black"}}>Sign-up
                     </Button>
-                <Button href="Sign-in" variant="secondary" style={{backgroundColor: "inherit", 
+                <Button href="login" variant="secondary" style={{backgroundColor: "inherit", 
                     color: "black"}}>Sign-in
                     </Button>
             </ButtonGroup>
