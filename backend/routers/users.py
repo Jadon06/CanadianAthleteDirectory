@@ -23,7 +23,7 @@ async def create_user(user_info: schemas.userCreate):
     pending_user = models.pending_users(**user_info.dict())
     pending_user.password = auth_helpers.hash(pending_user.password)
     pending_user.save()
-    pending_user.expire(1800)
+    pending_user.expire(TTL)
     email_verification.send_verification_email(user_info.email, verification_token)
     return {"status" : "verify email"}
 
@@ -42,6 +42,10 @@ async def get_user(first_name: str, last_name: str, current_user: int = Depends(
     if not results:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="user not found!")
     return results
+
+@router.get("/me")
+async def get_current_user(current_user: int = Depends(oauth2.get_current_user)):
+    return current_user
 
 @router.delete("/", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_user(current_user: int = Depends(oauth2.get_current_user)):

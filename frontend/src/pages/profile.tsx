@@ -3,6 +3,7 @@ import { CiEdit } from "react-icons/ci";
 import { IoIosHome, IoIosNotifications } from "react-icons/io";
 import { FaUserFriends, FaSearch } from "react-icons/fa";
 import { LuMessageSquareMore } from "react-icons/lu";
+import { useNavigate } from 'react-router-dom';
 
 import "../App.css"
 import EditHeaderProfile from '../Components/EditHeaderPopUpComponent.tsx';
@@ -13,6 +14,27 @@ import Modal from "../Components/portal.tsx"
 export default function profile(){
     const [isEditHeaderModalVisible, setIsEditHeaderModalVisible] = useState(false)
     const [isEditGameScheduleModalVisible, setIsEditGameScheduleModalVisible] = useState(false)
+    const [userData, setUserData] = useState<{
+        firstName: string;
+        middleName: string;
+        lastName: string;
+        headline: string;
+        phoneNumber: string;
+        email: string;
+    } | null>(null);
+
+
+    const navigate = useNavigate()
+
+    const fetchUser = async() => {
+        const response = await fetch('http://localhost:8001/me/')
+        let data = await response.json();
+        setUserData(data);
+    }
+
+    const handleClick = () => {
+        navigate("/")
+    }
 
     return (
         <>
@@ -43,10 +65,11 @@ export default function profile(){
                                 <CiEdit className="edit-button" style={{
                                     }} onClick={() => setIsEditHeaderModalVisible(true)}
                                 />
-                                <EditHeaderProfile
+                                {userData && <EditHeaderProfile
                                     show={isEditHeaderModalVisible}
                                     onHide={() => setIsEditHeaderModalVisible(false)}
-                                />
+                                    initialUser={userData}
+                                />}
                                 <Container>
                                     <div className='d-flex flex-column' style={{justifyContent: "center"}}>
                                             <img src="/nopfp_img.jpg" 

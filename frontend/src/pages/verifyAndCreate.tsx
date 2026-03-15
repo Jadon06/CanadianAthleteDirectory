@@ -10,6 +10,7 @@ interface credentials {
 }
 
 export default function VerifyCreateAndLogin() {
+    const { token } = useParams();
     const [credentials, setCredentials] = useState<credentials>({
         username: "",
         password: ""
@@ -24,8 +25,7 @@ export default function VerifyCreateAndLogin() {
     };
 
     const login_user = async() => {
-        const token = useParams();
-        const response = await fetch('http://localhost:8001/login/${token}',
+        const response = await fetch(`http://localhost:8001/login/${token}`,
             {method: 'POST',
             headers: {'Content-Type': "application/x-www-form-urlencoded"},
             body: new URLSearchParams({
@@ -39,14 +39,17 @@ export default function VerifyCreateAndLogin() {
             return;
         }
         const data = await response.json()
-        return console.log(data)
+        console.log(data)
+        return response.ok
     }
 
     const navigate = useNavigate()
 
     const handleClick = async () => {
-        console.log(login_user())
-        navigate("/profile")
+        const result = await login_user()
+        if (result) {
+            navigate("/dashboard")
+        }
     }
 
     return (

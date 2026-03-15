@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status, HTTPException, Response
+from fastapi import APIRouter, Depends, status, HTTPException, Response, Request
 from .. import models, utils, schemas, oauth2
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from ..utils import auth_helpers, email_verification
@@ -16,11 +16,22 @@ async def login(response: Response, user_credentials: OAuth2PasswordRequestForm 
     # return the token for login
     access_token = oauth2.create_acess_token(data={"email" : user.email})
     auth_helpers.set_cookie(response, access_token)
-    return {"Log in Successful"}
+    return {"log in success"}
 
-@router.post("/{token}")
+@router.get("/get-cookie-value")
+def get_cookie(request: Request):
+    token = request.cookies.get("session_token")
+    if token:
+        return token
+    else:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Cookie not found!")
+
+@router.post("/login/{token}")
 async def verify_and_create_user(token: str):
-    token_data = email_verification.verify_token(token)
+    credentials_exception = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate credentials",
+                                          headers={"WWW-Authenticate" : "Bearer"})
+    print("done")
+    token_data = email_verification.verify_token(token, credentials_exception)
     print(token_data)
     pending = models.pending_users.find(models.pending_users.email == token_data.email).first()
     if not pending:

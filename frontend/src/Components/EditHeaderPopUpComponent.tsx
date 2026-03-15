@@ -1,7 +1,7 @@
 import { Modal, Form, Button, InputGroup } from 'react-bootstrap';
 import { useState } from 'react'
 
-interface EditHeaderProfileProps {
+export interface EditHeaderProfileProps {
     show: boolean;
     onHide: () => void;
     initialUser: {

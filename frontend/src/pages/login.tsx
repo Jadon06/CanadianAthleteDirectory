@@ -27,6 +27,7 @@ export default function Login() {
         const response = await fetch('http://localhost:8001/login/',
             {method: 'POST',
             headers: {'Content-Type': "application/x-www-form-urlencoded"},
+            credentials: "include",
             body: new URLSearchParams({
                 username: credentials["username"],
                 password: credentials["password"]
@@ -45,6 +46,7 @@ export default function Login() {
 
     const handleClick = async () => {
         console.log(login_user())
+        navigate("/dashboard")
     }
 
     return (

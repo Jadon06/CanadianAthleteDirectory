@@ -20,7 +20,7 @@ function App() {
       <Route path="/login/" element={<Login />} />
       <Route path="/verify/" element={<Verify />}/>
       <Route path="/feed/" element={<Feed />}/>
-      <Route path="/profile/" element={<Profile />}/>
+      <Route path="/dashboard/" element={<Profile />}/>
       <Route path="/verifyandcreate/:token" element={<VerifyCreateAndLogin />}/>
     </Routes>
   )
