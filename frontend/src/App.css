@@ -1,7 +1,7 @@
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0;
   text-align: center;
   --navbar-height: 64px;
 }
@@ -52,11 +52,19 @@
 }
 
 .hyperlink.btn:hover {
-  border-color: inherit;
+  border-color: transparent;
   text-decoration: underline !important;
-  text-decoration-color: currentColor !important;
-  background-color: inherit;
-  background: inherit;
+  text-decoration-color: black !important;
+  color: black;
+  background-color: transparent;
+  background: transparent;
+}
+
+.hyperlink.btn {
+  border-color: transparent;
+  color: black;
+  background-color: transparent;
+  background: transparent;
 }
 
 .normal-button.btn:hover {
@@ -139,6 +147,22 @@
   /* border: 1px solid black !important; */
 }
 
+.editEducation-button {
+  top: 22px; 
+  left: 170px; 
+  width: 25px;
+  height: 25px; 
+  border-Radius: 10px; 
+  position: absolute;
+  cursor: pointer;
+}
+
+.editEducation-button:hover {
+  background-color: lightgray !important;
+  color: black !important;
+  /* border: 1px solid black !important; */
+}
+
 .pfp-img {
   border: 1px solid black;
   border-Radius: 100px; 
@@ -146,4 +170,26 @@
   width: 100px;
   height: 100px; 
   margin-Top: 10px;
+}
+
+.card.educationSettings-card {
+  height: 100px;
+  border: 1px solid black; 
+  margin-Bottom: 10px; 
+  border-Radius: 20px;
+}
+
+.icons-settings {
+  margin-left: 20px;
+  height: 40px;
+  width: 40px;
+  cursor: pointer;
+}
+
+.icons-settings:hover {
+  background-color: lightgrey;
+  margin-left: 20px;
+  height: 40px;
+  width: 40px;
+  cursor: pointer;
 }

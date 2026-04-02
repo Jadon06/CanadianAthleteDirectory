@@ -21,6 +21,7 @@ def set_cookie(response: Response, token):
         value=token,
         httponly=True,
         max_age=ACCESS_TOKEN_EXPIRE_SECONDS, # Optional: cookie lifetime in seconds (1 hour)
-        secure=True,  # Optional: ensures cookie is only sent over HTTPS in production
-        samesite="none" # Optional: helps mitigate CSRF attacks
+        secure=False,  # Optional: ensures cookie is only sent over HTTPS in production
+        samesite="lax", # Optional: helps mitigate CSRF attacks
+        path="/"
     )

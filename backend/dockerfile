@@ -1,6 +1,6 @@
 FROM python:3.12-slim
 
-WORKDIR /usr/src/backend
+WORKDIR /usr/src
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -9,10 +9,12 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-COPY ../requirements.txt ./requirements.txt
+COPY requirements.txt /usr/src/backend/requirements.txt
+COPY usports_scraper/recent_games.json /usr/src/backend/usports_scraper/recent_games.json
+COPY usports_scraper/recent_players.json /usr/src/backend/usports_scraper/recent_players.json
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r /usr/src/backend/requirements.txt
 
-COPY . .
+COPY . /usr/src/backend
 
 CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8001", "--reload"]

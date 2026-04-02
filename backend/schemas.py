@@ -1,20 +1,17 @@
 from pydantic import BaseModel, EmailStr, model_serializer
 from datetime import datetime
-from typing import Optional, Annotated
+from typing import Optional, Annotated, List
 from pydantic import EmailStr, field_validator, StringConstraints
 from fastapi import UploadFile, HTTPException, status
 
-class Education(BaseModel):
-    school: str
-    degree: str
-    major: Optional[str] = None
-    minor: Optional[str] = None
-    start_date: str
-    end_date: str
-    grade: Optional[float] = None
-    activities: Optional[str] = None
-    description: Optional[str] = None
-    skills: Optional[str] = None
+class stats(BaseModel):
+    height: str
+    weight: str
+    age: str
+    ppg: str
+    assists: str
+    rebounds: str
+    field_goal_pct: str
 
 class upcoming_event(BaseModel):
     title: str
@@ -22,28 +19,37 @@ class upcoming_event(BaseModel):
     location: str
     date: datetime
 
+# class userCreate(BaseModel):
+#     first_name: str
+#     last_name: str
+#     middle_nmae: Optional[str]
+#     email: EmailStr
+#     phone_number: int
+#     password: str
+#     headline: Optional[str] = None
+#     education: Optional[Education] = None
+#     about: Optional[str] = None
+#     upcoming_events: Optional[upcoming_event] = None
+#     interests: Optional[str] = None
+
 class userCreate(BaseModel):
-    first_name: str
-    last_name: str
     email: EmailStr
-    phone_number: int
     password: str
-    headline: Optional[str] = None
-    education: Optional[Education] = None
-    about: Optional[str] = None
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    profile_picture: Optional[str] = None
+    phone_number: Optional[str] = None
+    school: Optional[str] = None
     upcoming_events: Optional[upcoming_event] = None
-    interests: Optional[str] = None
 
 class userReturn(BaseModel):
-    first_name: str
-    last_name: str
+    first_name: Optional[str]
+    last_name: Optional[str]
     email: EmailStr
     phone_number: int
-    headline: Optional[str] = None
-    education: Optional[Education] = None
+    school: Optional[str] = None
     about: Optional[str] = None
     upcoming_events: Optional[upcoming_event] = None
-    interests: Optional[str] = None
 
     @model_serializer
     def serialize(self):
@@ -57,6 +63,14 @@ class userReturn(BaseModel):
     
 class userUpdate(userCreate):
     pass
+
+class userUpdateHeader(BaseModel):
+    first_name: Optional[str] 
+    last_name: Optional[str]
+    middle_name: Optional[str]
+    headline: Optional[str]
+    phone_number: Optional[str]
+    email: Optional[EmailStr]
 
 class verificationRequest(BaseModel):
     email: EmailStr
@@ -98,3 +112,15 @@ class comment(BaseModel):
     post_id: str
     user_email: str
     content: str
+
+class stat_selection(BaseModel):
+    email: EmailStr
+    Ast: Optional[bool] = True
+    Pts: Optional[bool] = True
+    Reb: Optional[bool] = True
+    Stls: Optional[bool] = False
+    OReb: Optional[bool] = False
+    DReb: Optional[bool] = False
+    Fg: Optional[bool] = False
+    Ft: Optional[bool] = False
+    ThreePt: Optional[bool] = False

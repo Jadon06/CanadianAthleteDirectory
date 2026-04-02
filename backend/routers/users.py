@@ -28,7 +28,7 @@ async def create_user(user_info: schemas.userCreate):
     return {"status" : "verify email"}
 
 @router.put("/")
-async def update_user(updated_user: schemas.userUpdate, current_user = Depends(oauth2.get_current_user)):
+async def update_user_header(updated_user: schemas.userUpdateHeader, current_user: int = Depends(oauth2.get_current_user)):
     user = await models.users.find_one(models.users.email == current_user.email)
     data = updated_user.model_dump(exclude_unset=True)
     for field, value in data.items():
@@ -36,16 +36,20 @@ async def update_user(updated_user: schemas.userUpdate, current_user = Depends(o
     await user.save()
     return user
 
-@router.get("/{first_name}:{last_name}", response_model=List[schemas.userReturn])
-async def get_user(first_name: str, last_name: str, current_user: int = Depends(oauth2.get_current_user)):
-    results = await Search_system.recommendations(first_name, last_name, current_user)
-    if not results:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="user not found!")
-    return results
+# @router.get("/{data}", response_model=List[schemas.userReturn])
+# async def get_user(data: str, current_user: int = Depends(oauth2.get_current_user)):
+#     results = await Search_system.recommendations(data.first_name, data.last_name, current_user)
+#     if not results:
+#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="user not found!")
+#     return results
 
-@router.get("/me")
+@router.get("/me" )#, response_class=schemas.userReturn)
 async def get_current_user(current_user: int = Depends(oauth2.get_current_user)):
-    return current_user
+    user = await models.users.find_one(models.users.email == current_user.email)
+    if user:
+        return user
+    else:
+        print("failed")
 
 @router.delete("/", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_user(current_user: int = Depends(oauth2.get_current_user)):

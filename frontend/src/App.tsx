@@ -6,6 +6,10 @@ import Verify from "./pages/verify.tsx"
 import Feed from "./pages/feed.tsx"
 import Profile from "./pages/profile.tsx"
 import VerifyCreateAndLogin from "./pages/verifyAndCreate.tsx"
+import Messages from "./pages/messages.tsx"
+import Results from "./pages/results.tsx"
+import Notifications from "./pages/notifications.tsx"
+import Analytics from "./pages/analytics.tsx"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import "react-datepicker/dist/react-datepicker.css";
@@ -22,6 +26,10 @@ function App() {
       <Route path="/feed/" element={<Feed />}/>
       <Route path="/dashboard/" element={<Profile />}/>
       <Route path="/verifyandcreate/:token" element={<VerifyCreateAndLogin />}/>
+      <Route path="/messages/" element={<Messages />}/>
+      <Route path="/search-results" element={<Results />} />
+      <Route path="/notifications" element={<Notifications />} />
+      <Route path="/analytics" element={<Analytics />} />
     </Routes>
   )
 }

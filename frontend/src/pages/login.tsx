@@ -23,6 +23,8 @@ export default function Login() {
         }));
     };
 
+    const navigate = useNavigate()
+
     const login_user = async() => {
         const response = await fetch('http://localhost:8001/login/',
             {method: 'POST',
@@ -36,17 +38,16 @@ export default function Login() {
         if (!response.ok) {
             const data = await response.json()
             setLoginError(data.detail)
+            console.log("failed to send")
             return;
         }
         const data = await response.json()
+        navigate("/dashboard")
         return console.log(data)
     }
 
-    const navigate = useNavigate()
-
     const handleClick = async () => {
         console.log(login_user())
-        navigate("/dashboard")
     }
 
     return (

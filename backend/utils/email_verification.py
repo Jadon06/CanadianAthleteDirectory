@@ -9,7 +9,7 @@ from .. import schemas
 
 load_dotenv()
 
-PASSWORD = os.getenv("PASSWORD")
+APP_PASSWORD = os.getenv("APP_PASSWORD")
 EMAIL = os.getenv("EMAIL")
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")
@@ -40,6 +40,6 @@ def send_verification_email(recipient: EmailStr, access_token: str):
     em.set_content(f"your verification link expires in 30 minutes\n http://localhost:5173/verifyandcreate/{access_token}")
 
     with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
-        print(PASSWORD)
-        smtp.login(EMAIL, PASSWORD)
+        print(APP_PASSWORD)
+        smtp.login(EMAIL, APP_PASSWORD)
         smtp.sendmail(EMAIL, recipient, em.as_string())

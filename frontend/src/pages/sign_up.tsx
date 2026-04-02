@@ -10,7 +10,7 @@ interface new_user {
     email: string;
     phone_number: string;
     password: string;
-    confirm_password: string;
+    // confirm_password: string;
 }
 
 export default function Sign_up() {
@@ -19,9 +19,9 @@ export default function Sign_up() {
         last_name: "",
         email: "",
         password: "",
-        confirm_password: "",
         phone_number: ""
     });
+    const [confirmPassword, setConfirmPassword] = useState("");
     const [firstNameError, setFirstNameError] = useState("");
     const [lastNameError, setLastNameError] = useState("");
     const [emailError, setEmailError] = useState("");
@@ -37,6 +37,10 @@ export default function Sign_up() {
         }));
     };
     
+    const handlepw = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setConfirmPassword(event.target.value);
+    };
+
     const CreateUser =  async () => {
         const response = await fetch('http://localhost:8001/users/', {
             method: 'POST',
@@ -45,7 +49,7 @@ export default function Sign_up() {
         })
         if (!response.ok) {
             const data = await response.json()
-            console.log("done")
+            console.log("api called")
             setUserExistsError(data.detail)
             return;
         }
@@ -54,38 +58,45 @@ export default function Sign_up() {
     const navigate = useNavigate()
 
     const handleClick = async () => {
+        console.log("click ran")
         let haserror = false;
 
         if (!newUser.first_name.trim()) {
             setFirstNameError("First name is empty");
+            console.log("first name error")
             haserror=true;
         }
         if (!newUser.last_name.trim()) {
             setLastNameError("Last name is empty");
+            console.log("last name error")
             haserror=true;
         }
         if (!newUser.email.trim()) {
             setEmailError("Email is empty");
+            console.log("email error")
             haserror=true;
         }
         if (!newUser.phone_number.trim()) {
             setphoneNumberError("Phone number is empty");
+            console.log("phone error")
             haserror=true;
         }
         if (!newUser.password.trim()) {
             setPasswordError("Password is empty");
+            console.log("pw error")
             haserror=true;
         }
-        if (newUser.password !== newUser.confirm_password) {
+        if (newUser.password != confirmPassword) {
             setPasswordAlert(true);
+            console.log(confirmPassword, newUser.password)
             return;
         }
-        // if (newUser.password == newUser.confirm_password) {
-        //     setPasswordAlert(false);
-        //     return;
-        // }
         
-        if (haserror) return;
+        if (haserror) {
+            console.log("error occurred!")
+            return;
+        }
+        console.log("redirected")
         navigate("/verify")
         CreateUser();
     };
@@ -145,8 +156,8 @@ export default function Sign_up() {
                     <Form.Control
                         type={"password"}
                         placeholder={"Enter Here"}
-                        value={newUser.confirm_password}
-                        onChange={e => handleChange("confirm_password", e.target.value)}
+                        value={confirmPassword}
+                        onChange={handlepw}
                     />
                 </InputGroup>
 
@@ -161,8 +172,9 @@ export default function Sign_up() {
                 </Alert>
             )}
 
-            <Button variant='light' className='normal-button' onClick={handleClick} style={{marginTop: "50px", fontSize: "20px"}}
-            >Finish</Button>
+            <Button variant='light' className='normal-button' onClick={handleClick} style={{marginTop: "50px", fontSize: "20px"}}>
+                Finish
+            </Button>
         </>
     );
 }

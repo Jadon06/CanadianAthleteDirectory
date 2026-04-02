@@ -3,7 +3,9 @@ from pydantic import EmailStr
 from fastapi import Depends, status, HTTPException, Request
 from fastapi.security import OAuth2PasswordBearer
 from datetime import datetime, timedelta
-from . import schemas, database, models
+
+from .databases import MongoDB
+from . import schemas, models
 import os
 from dotenv import load_dotenv
 
@@ -37,6 +39,7 @@ def verify_access_token(token: str, credentials_exception):
 
 async def get_current_user(request: Request):
     token = request.cookies.get("session_token")
+    print(token)
     credentials_exception = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate credentials",
                                           headers={"WWW-Authenticate" : "Bearer"})
     token_info = verify_access_token(token, credentials_exception)
