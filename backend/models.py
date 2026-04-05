@@ -71,6 +71,7 @@ class highlights(Base):
     title = Column(String, nullable=False)
     content = Column(String, nullable=False)
     description = Column(String, nullable=True)
+    thumbnail = Column(String, nullable=True)
     date = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text('now()'))
 
 # class comments(Base):

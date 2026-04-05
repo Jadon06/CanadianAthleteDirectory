@@ -1,0 +1,89 @@
+import { Modal, Form, Button, InputGroup } from 'react-bootstrap';
+import { useEffect, useState } from 'react'
+import type { Highlight } from './HighlightsBody';
+
+export interface CreateHighlightProps {
+    show: boolean;
+    onHide: () => void;
+}
+
+export default function CreateHighlightModal({ show, onHide }: CreateHighlightProps) {
+    const [highlightData, setHighlightData] = useState<Highlight>({
+        title: "",
+        content: "",
+        thumbnail: "",
+        description: "",
+        date: ""
+        })
+    
+    const createHighlight = async() => {
+        const response = await fetch("http://localhost:8001/highlights/", {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                'Content-Type': 'application/json', // Required for JSON data
+            },
+            body: JSON.stringify(highlightData),
+        })
+        const data = await response.json()
+        console.log(data)
+    }
+
+    const handleClickFinish = () => {
+        onHide();
+        createHighlight();
+    }
+
+    const handleChange = (key: keyof Highlight, value: string) => {
+        setHighlightData(prev => ({
+            ...prev,
+            [key] : value
+        }));
+    };
+
+    return (
+        <Modal show={show} onHide={onHide} centered>
+            <Modal.Header closeButton>
+                <Modal.Title>Create Highlight</Modal.Title>
+            </Modal.Header>
+            <InputGroup style={{marginBottom: "10px"}}>
+                <InputGroup.Text id="title">title</InputGroup.Text>
+                    <Form.Control
+                        placeholder={"Enter Here"}
+                        value={highlightData.title}
+                        onChange={e => handleChange("title", e.target.value)}
+                    />
+            </InputGroup>
+            <InputGroup style={{marginBottom: "10px"}}>
+                <InputGroup.Text id="content">content</InputGroup.Text>
+                    <Form.Control
+                        placeholder={".mp4/.mov/.hvec"}
+                        value={highlightData.content}
+                        onChange={e => handleChange("content", e.target.value)}
+                    />
+            </InputGroup>
+            <InputGroup style={{marginBottom: "10px"}}>
+                <InputGroup.Text id="description">description</InputGroup.Text>
+                    <Form.Control
+                        placeholder={"describe the highlight in a few words"}
+                        value={highlightData.description}
+                        onChange={e => handleChange("description", e.target.value)}
+                    />
+            </InputGroup>
+            <InputGroup style={{marginBottom: "10px"}}>
+                <InputGroup.Text id="thumbnail">thumbnail</InputGroup.Text>
+                    <Form.Control
+                        placeholder={".jpg/.png/.img"}
+                        value={highlightData.thumbnail}
+                        onChange={e => handleChange("thumbnail", e.target.value)}
+                    />
+            </InputGroup>
+            <InputGroup className='d-flex justify-content-end' style={{marginBottom: "10px"}}>
+                <Button 
+                    style={{marginRight: "10px"}} onClick={handleClickFinish}>
+                        Finish
+                </Button>
+            </InputGroup>
+        </Modal>
+    );
+}

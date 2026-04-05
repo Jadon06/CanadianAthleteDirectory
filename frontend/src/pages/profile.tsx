@@ -14,6 +14,9 @@ import CustomNavBar from '../Components/NavigationBar.tsx';
 import ProfileHeader from '../Components/ProfileHeader.tsx';
 import HighlightsBody from '../Components/HighlightsBody.tsx';
 import type { Highlight } from '../Components/HighlightsBody.tsx';
+import type { OverallStatData } from '../Components/AnalyticsHeader.tsx';
+import CreateHighlightModal from '../Components/CreateHighlightModal.tsx';
+import { useTheme } from '@emotion/react';
 
 export default function profile(){
     const [isEditHeaderModalVisible, setIsEditHeaderModalVisible] = useState(false)
@@ -21,6 +24,37 @@ export default function profile(){
     const [isContactInfoVisible, setIsContactInfoVisible] = useState(false)
     const [isEditEducationVisible, setIsEditEducationVisible] = useState(false)
     const [searchData, setSearchData] = useState("")
+    const [isCreateHighlightModalVisible, setCreateHighlightModalVisible] = useState(false)
+
+    const [overallData, setOverallData] = useState<OverallStatData>({
+        first_name: "",
+        last_name: "",
+        position: "",
+        Games: 0,
+        Games_started: 0,
+        Minutes: 0,
+        Minutes_per_game: 0,
+        FG: "",
+        FG_Pct: 0,
+        threePT: "",
+        threePT_Pct: 0,
+        FT: "",
+        FT_Pct: 0,
+        Off_rebounds: 0,
+        Def_rebounds: 0,
+        Total_rebounds: 0,
+        Rebounds_per_game: 0,
+        Personal_fouls: 0,
+        Disqualifications: 0,
+        Assists: 0,
+        Turnovers: 0,
+        Assist_to_turnover_ratio: 0,
+        Steals: 0,
+        Blocks: 0,
+        Points: 0,
+        Points_per_game: 0,
+        Points_per_40_min: 0,
+    })
     const [userData, setUserData] = useState<{
         first_name: string;
         middle_name: string;
@@ -53,12 +87,33 @@ export default function profile(){
         })
         if (response.ok) {
             let data = await response.json();
+            console.log(data)
             setHighlights(data)
+        }
+        else{
+            console.log("highlight retrieval failed")
+        }
+    }
+
+    const fetchOverallStats = async() => {
+        const response = await fetch("http://localhost:8001/stats/overall_stats/", {
+            method: "GET",
+            credentials: "include"
+        })
+        if (response.ok) {
+            const data = await response.json()
+            setOverallData(data)
+            console.log("parsed and set")
+        }
+        else {
+            console.log("failed")
         }
     }
 
     useEffect(() => {
         fetchUser();
+        fetchOverallStats();
+        fetchHighlights();
     }, []);
 
     const handleClickHome = () => {
@@ -101,10 +156,15 @@ export default function profile(){
         setIsContactInfoVisible(true)
     }
 
+    const handleShowHighlightsModal = () => {
+        setCreateHighlightModalVisible(true)
+    }
+
     const handleHideModal = () => {
         setIsEditHeaderModalVisible(false)
         setIsContactInfoVisible(false)
         setIsEditEducationVisible(false)
+        setCreateHighlightModalVisible(false)
         fetchUser();
     }
 
@@ -121,9 +181,20 @@ export default function profile(){
             
             <ProfileHeader 
                 Contact={handleShowContactModal}
+                Connect={() => {}}
                 Analytics={handleClickAnalytics}
+                CreateHighlight={handleShowHighlightsModal}
+                ProfilePic={""}
+                Age={""}
                 Name={userData?.first_name + " " + userData?.last_name}
-                Position={userData?.postiton + " "}
+                Position={"Position: " + overallData.position + " "}
+                Height={""}
+                Weight={""}
+                PPG={overallData.Points_per_game + " "}
+                Assists={overallData.Assists + " "}
+                Rebounds={overallData.Rebounds_per_game + " "}
+                FieldGoal={overallData.FG_Pct + "%"}
+                School={""}
 
             />
             <ContactInfo
@@ -131,7 +202,14 @@ export default function profile(){
                 onHide={handleHideModal}
             />
 
-            <HighlightsBody highlights={highlights} />
+            <CreateHighlightModal
+                show={isCreateHighlightModalVisible}
+                onHide={handleHideModal}
+            />
+
+            <HighlightsBody 
+                highlights={highlights} 
+            />
         </>
     );
 }

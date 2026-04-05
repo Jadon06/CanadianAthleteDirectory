@@ -90,21 +90,9 @@ class VerificationTokenData(BaseModel):
 
 class highlight(BaseModel):
     title: str
-    content: UploadFile
+    content: str
     description: Optional[Annotated[str, StringConstraints(max_length=150)]] = None
-
-    @field_validator('content')
-    @classmethod
-    def validate_attatchment(cls, v: UploadFile):
-        allowed_extensions = {'.mp4', '.mov', '.avi', '.mkv'}
-        if v not in allowed_extensions:
-            raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE, 
-                                detail="content must be a .mp4, .mov, .avi or .mkv file!")
-        size_limit = 3 * 1024**3
-        if v.size > size_limit:
-            raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE, 
-                                detail="file size too large, must be 3GB or less!")
-        return v
+    thumbnail: Optional[str]
     class Settings:
         name = "highlights"
 
@@ -124,3 +112,35 @@ class stat_selection(BaseModel):
     Fg: Optional[bool] = False
     Ft: Optional[bool] = False
     ThreePt: Optional[bool] = False
+
+class overall_stat_return(BaseModel):
+    first_name: str
+    last_name: str
+    position: str
+    Games: str
+    Games_started: str
+    Minutes: str
+    Minutes_per_game: str
+    FG: str
+    FG_Pct: str
+    threePT: str
+    threePT_Pct: str
+    FT: str
+    FT_Pct: str
+    Off_rebounds: str
+    Def_rebounds: str
+    Total_rebounds: str
+    Rebounds_per_game: str
+    Personal_fouls: str
+    Disqualifications: str
+    Assists: str
+    Turnovers: str
+    Assist_to_turnover_ratio: str
+    Steals: str
+    Blocks: str
+    Points: str
+    Points_per_game: str
+    Points_per_40_min: str
+
+    class Config:
+        orm_mode = True

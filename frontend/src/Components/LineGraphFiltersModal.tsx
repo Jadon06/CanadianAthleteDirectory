@@ -19,6 +19,8 @@ export default function FiltersModal({ show, onHide } : ViewFiltersProp) {
     const [showFg, setShowFg] = useState(false)
     const [show3Pt, setShow3Pt] = useState(false)
     const [showFt, setShowFt] = useState(false)
+
+    
     
     return (
         <Modal show={show} onHide={onHide} centered>

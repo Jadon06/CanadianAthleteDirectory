@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from .databases.MongoDB import init_db
-from .routers import users, auth, highlights, stats
+from .routers import users, auth, highlights, stats, filters
 # from .messaging_system import messaging_router
 from . import models
 import asyncio
@@ -27,8 +27,6 @@ def populate_dbs():
 
         try:
             for row in player_data:
-                for field in player_extra_fields:
-                    row.pop(field, None)
                 stats = models.basketball_stats(**row)
                 db.add(stats)
                 db.commit()
@@ -70,3 +68,4 @@ app.include_router(auth.router)
 app.include_router(highlights.router)
 app.include_router(messaging_router.router)
 app.include_router(stats.router)
+app.include_router(filters.router)

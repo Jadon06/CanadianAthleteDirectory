@@ -5,8 +5,38 @@ import { useNavigate } from 'react-router-dom';
 import AnalyticsBody from '../Components/AnalyticsBody';
 import AnalyticsHeader from '../Components/AnalyticsHeader';
 import CustomNavBar from '../Components/NavigationBar';
-import type { StatData, statDataProp } from '../Components/AnalyticsHeader';
+import type { StatData, OverallStatData } from '../Components/AnalyticsHeader';
 import type { ViewFiltersProp } from '../Components/LineGraphFiltersModal';
+
+const defaultData = {
+    first_name: "",
+    last_name: "",
+    position: "",
+    Games: 0,
+    Games_started: 0,
+    Minutes: 0,
+    Minutes_per_game: 0,
+    FG: "",
+    FG_Pct: 0,
+    threePT: "",
+    threePT_Pct: 0,
+    FT: "",
+    FT_Pct: 0,
+    Off_rebounds: 0,
+    Def_rebounds: 0,
+    Total_rebounds: 0,
+    Rebounds_per_game: 0,
+    Personal_fouls: 0,
+    Disqualifications: 0,
+    Assists: 0,
+    Turnovers: 0,
+    Assist_to_turnover_ratio: 0,
+    Steals: 0,
+    Blocks: 0,
+    Points: 0,
+    Points_per_game: 0,
+    Points_per_40_min: 0,
+}
 
 export default function Analytics() {
     const [statData, setStatData] = useState<StatData>({
@@ -27,6 +57,8 @@ export default function Analytics() {
         threpm_a: ["none"],
         to_: [0]
     })
+
+    const [overallStatData, setOverallStatData] = useState<OverallStatData>(defaultData)
     const [showFiltersModal, setShowFiltersModal] = useState(false)
 
     const navigate = useNavigate()
@@ -104,25 +136,74 @@ export default function Analytics() {
         }
     }
 
+    const fetchOverallStats = async() => {
+        const response = await fetch("http://localhost:8001/stats/overall_stats/", {
+            method: "GET",
+            credentials: "include"
+        })
+        if (response.ok) {
+            const data = await response.json()
+            const parsed_data = {
+                ...data,
+                first_name: data.first_name,
+                last_name: data.last_name,
+                position: data.position,
+                Games: Number(data.Games),
+                Games_started: Number(data.Games_started),
+                Minutes: Number(data.Minutes),
+                Minutes_per_game: Number(data.Minutes_per_game),
+                FG: data.FG,
+                FG_Pct: Number(data.FG_Pct),
+                threePT: data.threePT,
+                threePT_Pct: Number(data.threePT_Pct),
+                FT: data.FT,
+                FT_Pct: Number(data.FT_Pct),
+                Off_rebounds: Number(data.Off_rebounds),
+                Def_rebounds: Number(data.Def_rebounds),
+                Total_rebounds: Number(data.Total_rebounds),
+                Rebounds_per_game: Number(data.Rebounds_per_game),
+                Personal_fouls: Number(data.Personal_fouls),
+                Disqualifications: Number(data.Disqualifications),
+                Assists: Number(data.Assists),
+                Turnovers: Number(data.Turnovers),
+                Assist_to_turnover_ratio: Number(data.Assist_to_turnover_ratio),
+                Steals: Number(data.Steals),
+                Blocks: Number(data.Blocks),
+                Points: Number(data.Points),
+                Points_per_game: Number(data.Points_per_game),
+                Points_per_40_min: Number(data.Points_per_40_min),
+            }
+            setOverallStatData(parsed_data)
+            console.log("parsed and set")
+        }
+        else {
+            console.log("failed")
+        }
+    }
+
     useEffect(() => {
+        setOverallStatData(defaultData);
         fetchStats()
-        console.log(statData)
-    }, [statData])
+        fetchOverallStats()
+    }, [])
 
     return (
-        <>
-        <CustomNavBar 
-            handleClickHome={handleClickHome}
-            handleClickMsgs={handleClickMessages}
-            handleClickSearch={handleClickSearch}
-            handleClickNotifications={handleClickNotifications}
-            handleClickDashboard={handleClickDashboard}
-            handleChangeSearch={handleChangeSearch}
-            />
-        <AnalyticsHeader 
-            data={statData}
-            />
-        <AnalyticsBody data={statData} />
-        </>
+        <Container fluid>
+            <CustomNavBar 
+                handleClickHome={handleClickHome}
+                handleClickMsgs={handleClickMessages}
+                handleClickSearch={handleClickSearch}
+                handleClickNotifications={handleClickNotifications}
+                handleClickDashboard={handleClickDashboard}
+                handleChangeSearch={handleChangeSearch}
+                />
+            <AnalyticsHeader 
+                data={statData}
+                overallData={overallStatData}
+                />
+            <AnalyticsBody 
+                overallData={overallStatData} 
+                />
+        </Container>
     );
 }

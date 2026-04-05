@@ -15,9 +15,10 @@ interface ProfileHeaderProps {
     Contact: () => void;
     Connect: () => void;
     Analytics: () => void;
+    CreateHighlight: () => void;
 }
 
-export default function ProfileHeader({ ProfilePic, Name, Age, Position, Height, Weight, PPG, Assists, Rebounds, FieldGoal, School, Contact, Connect, Analytics } : ProfileHeaderProps) {
+export default function ProfileHeader({ ProfilePic, Name, Age, Position, Height, Weight, PPG, Assists, Rebounds, FieldGoal, School, Contact, Connect, Analytics, CreateHighlight } : ProfileHeaderProps) {
     return (
         <Container style={{border: "1px solid black", height: "240px", width: "700px"}}>
             <div className='d-flex flex-row gap-2'>
@@ -88,6 +89,7 @@ export default function ProfileHeader({ ProfilePic, Name, Age, Position, Height,
                         <Button className="hyperlink btn" onClick={Connect}>Connect</Button>
                         <Button className="hyperlink btn" onClick={Contact}>Contact</Button>
                         <Button className="hyperlink btn" onClick={Analytics}>Analytics</Button>
+                        <Button className="hyperlink btn" onClick={CreateHighlight}>Add Highlight</Button>
                     </div>
                     
                 </Container>

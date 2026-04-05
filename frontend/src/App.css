@@ -67,6 +67,21 @@
   background: transparent;
 }
 
+.filter.btn {
+  border-color: transparent;
+  color: black;
+  background-color: transparent;
+  background: transparent;
+}
+
+.filter.btn:hover {
+  color: white;
+  background-color: black;
+  /* text-decoration: underline;
+  text-decoration-color: white; */
+  border: transparent;
+}
+
 .normal-button.btn:hover {
   border-color: inherit;
   text-decoration-color: currentColor !important;
