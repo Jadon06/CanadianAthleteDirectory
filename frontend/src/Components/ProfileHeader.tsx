@@ -1,4 +1,5 @@
 import { Button, Form, Container, Nav, NavDropdown, Card, ButtonGroup, Table, ButtonToolbar, Tab} from 'react-bootstrap';
+import { useEffect, useState } from 'react';
 
 interface ProfileHeaderProps {
     ProfilePic: string;
@@ -19,6 +20,19 @@ interface ProfileHeaderProps {
 }
 
 export default function ProfileHeader({ ProfilePic, Name, Age, Position, Height, Weight, PPG, Assists, Rebounds, FieldGoal, School, Contact, Connect, Analytics, CreateHighlight } : ProfileHeaderProps) {
+    const schoolIcons: Record<string, string> = {
+        "Acadia University": "https://upload.wikimedia.org/wikipedia/en/0/06/Acadia_University_Coat_of_Arms_2017.jpg",
+        "Dalhousie University": "DalhousieIcon.jpeg",
+        "Memorial University of Newfoundland": "https://upload.wikimedia.org/wikipedia/en/thumb/0/06/Memorial_University_of_Newfoundland_CoA.svg/1280px-Memorial_University_of_Newfoundland_CoA.svg.png",
+        "Mount Allison University": "https://upload.wikimedia.org/wikipedia/commons/f/f1/Mount_allison_athletics_monogram.png",
+        "Saint Mary's University": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQF9obP2aOsscvZMF4gF001rGZqHdyug4SPzg&s",
+        "St. Francis Xavier University": "https://d2q79iu7y748jz.cloudfront.net/s/_squarelogo/256x256/1b7c0c959fa0b13da6ca2c7fb707dac2",
+        "St. Thomas University": "https://www.stu.ca/media/stu/site-content/about/coat-of-arms.jpg",
+        "Université de Moncton": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1AKxej5tJsQTJWtwJJVAT6cN4MxK_WGBoYA&s",
+        "University of New Brunswick (UNB)": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMKCG7E-2n09Jrh4fBGUfqVFbZcm5JiQUu0Q&s",
+        "University of Prince Edward Island (UPEI)": "https://images.squarespace-cdn.com/content/v1/597102da2e69cf32c2bb021f/1561482190390-0Q6FMWYWHGLPUZIZQEFE/UPEI+-+Fathom_Studio.png?format=1000w"
+    }
+    
     return (
         <Container style={{border: "1px solid black", height: "240px", width: "700px"}}>
             <div className='d-flex flex-row gap-2'>
@@ -49,12 +63,13 @@ export default function ProfileHeader({ ProfilePic, Name, Age, Position, Height,
                                                     border: "1px solid black"
                                                 }}>
                                                     <img 
-                                                        src={School}
+                                                        src={schoolIcons[School]}
                                                         style={{
                                                             width: "100%",
                                                             height: "100%",
                                                             objectFit: "cover"
                                                         }}
+                                                        title={School}
                                                     />
                                             </div>
                                         </div>

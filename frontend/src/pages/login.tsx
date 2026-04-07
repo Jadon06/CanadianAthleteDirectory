@@ -15,6 +15,7 @@ export default function Login() {
         password: ""
     });
     const [loginError, setLoginError] = useState(false)
+    const [isFirstTime, setIsFirstTime] = useState(true)
 
     const handleChange = (key: keyof credentials, value: string) => {
         setCredentials(prev => ({

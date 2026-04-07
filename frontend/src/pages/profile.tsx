@@ -63,6 +63,10 @@ export default function profile(){
         phone_number: string;
         email: string;
         postiton: string;
+        height: string;
+        weight: string;
+        age: string;
+        school: string;
     } | null>(null);
     const [highlights, setHighlights] = useState<Highlight[]>([])
 
@@ -185,16 +189,16 @@ export default function profile(){
                 Analytics={handleClickAnalytics}
                 CreateHighlight={handleShowHighlightsModal}
                 ProfilePic={""}
-                Age={""}
+                Age={userData?.age + " "}
                 Name={userData?.first_name + " " + userData?.last_name}
                 Position={"Position: " + overallData.position + " "}
-                Height={""}
-                Weight={""}
+                Height={userData?.height + "cm"}
+                Weight={userData?.weight + "lbs"}
                 PPG={overallData.Points_per_game + " "}
                 Assists={overallData.Assists + " "}
                 Rebounds={overallData.Rebounds_per_game + " "}
                 FieldGoal={overallData.FG_Pct + "%"}
-                School={""}
+                School={userData?.school + ""}
 
             />
             <ContactInfo

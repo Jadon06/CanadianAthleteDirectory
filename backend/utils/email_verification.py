@@ -26,10 +26,11 @@ def verification_token(payload: dict):
 def verify_token(token: str, credentials_exception):
     payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
     token_email: EmailStr = payload.get("email")
+    token_login_time: bool = payload.get("first_time_login")
 
     if not token_email or not token_email:
         raise credentials_exception
-    token_data = schemas.VerificationTokenData(email=token_email)
+    token_data = schemas.VerificationTokenData(email=token_email, token_login_time=token_login_time)
     return token_data
 
 def send_verification_email(recipient: EmailStr, access_token: str):

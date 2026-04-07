@@ -26,3 +26,7 @@ def get_stat_selection(current_user: int = Depends(oauth2.get_current_user)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="no selections found")
     
     return selection
+
+@router.get("/")
+def get_feed(current_user: int = Depends(oauth2.get_current_user)):
+    return

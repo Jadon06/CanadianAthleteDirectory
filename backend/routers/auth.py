@@ -28,18 +28,15 @@ def get_cookie(request: Request):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Cookie not found!")
 
 @router.post("/login/{token}")
-async def verify_and_create_user(response: Response, token: str):
+async def verify_and_create_user(data: schemas.userBuild, response: Response, token: str):
     credentials_exception = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate credentials",
                                           headers={"WWW-Authenticate" : "Bearer"})
     token_data = email_verification.verify_token(token, credentials_exception)
-    print(token_data)
     pending = models.pending_users.find(models.pending_users.email == token_data.email).first()
     if not pending:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, 
                             detail="Pending user not found!!")
-    # if :
-    #     raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE,
-    #                          detail="verification code expired or incorrect!!")
-    new_user = models.users(**pending.dict())
+    new_user = models.users(**pending.dict(), **data.dict())
+    print(data.dict())
     await models.users.insert(new_user)
-    return {"created succesfully"}
+    return new_user

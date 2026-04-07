@@ -3,7 +3,9 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 
-from .. import models
+from typing import List
+
+from .. import models, schemas
 from ..oauth2 import get_current_user
 from ..schemas import highlight
 from ..databases.PostgresDB import get_db
@@ -32,7 +34,7 @@ def update_highlight(id: int, highlight_updates: highlight, db: Session = Depend
     db.commit()
     return updated_highlights
 
-@router.get("/")
+@router.get("/", response_model=List[schemas.highlight_return])
 def get_highlights(db: Session = Depends(get_db), current_user: str = Depends(get_current_user)):
     highlights = db.query(models.highlights).filter(models.highlights.User_id == str(current_user.id)).all()
     if not highlights:

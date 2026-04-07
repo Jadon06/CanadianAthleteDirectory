@@ -22,11 +22,16 @@ class users(Document):
     middle_name: Optional[str] = None
     email: EmailStr
     password: str
+    profile_picture: Optional[str] = None
     phone_number: Optional[str] = None
     school: Optional[str] = None
     highlights: Optional[schemas.highlight] = None
     upcoming_events: Optional[schemas.upcoming_event] = None
-    position: Optional[str] = None    
+    position: Optional[str] = None
+    height: Optional[str] = None
+    weight: Optional[str] = None
+    age: Optional[str] = None
+    user_type: Optional[str] = None
 
     class Settings:
         name = "Users"
@@ -38,7 +43,6 @@ class pending_users(HashModel, index=True):
     email: str = Field(primary_key=True)
     password: str
     phone_number: Optional[str] = None
-    school: Optional[str] = None
     highlights: Optional[schemas.highlight] = None
     upcoming_events: Optional[schemas.upcoming_event] = None
     position: Optional[str] = None

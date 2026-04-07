@@ -1,8 +1,9 @@
 from fastapi import APIRouter, HTTPException, status, Depends
 from beanie.odm.operators.update.general import Set
 from typing import List
+
 from .. import schemas, models, oauth2
-from ..utils import Search_system, email_verification, auth_helpers
+from ..utils import email_verification, auth_helpers
 from dotenv import load_dotenv
 import os
 
@@ -19,7 +20,7 @@ async def create_user(user_info: schemas.userCreate):
     exists = await models.users.find_one(models.users.email == user_info.email)
     if exists:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"User with email:{user_info.email} already exists!")
-    verification_token = email_verification.verification_token({'email' : user_info.email})
+    verification_token = email_verification.verification_token({'email' : user_info.email, "first_time_login" : True})
     pending_user = models.pending_users(**user_info.dict())
     pending_user.password = auth_helpers.hash(pending_user.password)
     pending_user.save()
@@ -46,6 +47,7 @@ async def update_user_header(updated_user: schemas.userUpdateHeader, current_use
 @router.get("/me" )#, response_class=schemas.userReturn)
 async def get_current_user(current_user: int = Depends(oauth2.get_current_user)):
     user = await models.users.find_one(models.users.email == current_user.email)
+    print(user)
     if user:
         return user
     else:

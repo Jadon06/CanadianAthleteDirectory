@@ -38,25 +38,27 @@ const defaultData = {
     Points_per_40_min: 0,
 }
 
+const defaultStatData = {
+    first_name: ["None"],
+    last_name: ["None"],
+    game_date: ["none"],
+    ast: [0],
+    blk: [0],
+    dreb: [0],
+    fgm_a: ["none"],
+    ftm_a: [0],
+    min: [0],
+    oreb: [0],
+    pf: [0],
+    pts: [0],
+    reb: [0],
+    stl: [0],
+    threpm_a: ["none"],
+    to_: [0]
+}
+
 export default function Analytics() {
-    const [statData, setStatData] = useState<StatData>({
-        first_name: ["None"],
-        last_name: ["None"],
-        game_date: ["none"],
-        ast: [0],
-        blk: [0],
-        dreb: [0],
-        fgm_a: ["none"],
-        ftm_a: [0],
-        min: [0],
-        oreb: [0],
-        pf: [0],
-        pts: [0],
-        reb: [0],
-        stl: [0],
-        threpm_a: ["none"],
-        to_: [0]
-    })
+    const [statData, setStatData] = useState<StatData>(defaultStatData)
 
     const [overallStatData, setOverallStatData] = useState<OverallStatData>(defaultData)
     const [showFiltersModal, setShowFiltersModal] = useState(false)
@@ -183,8 +185,9 @@ export default function Analytics() {
 
     useEffect(() => {
         setOverallStatData(defaultData);
-        fetchStats()
-        fetchOverallStats()
+        setStatData(defaultStatData);
+        fetchStats();
+        fetchOverallStats();
     }, [])
 
     return (

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, model_serializer
+from pydantic import BaseModel, EmailStr, model_serializer, field_serializer
 from datetime import datetime
 from typing import Optional, Annotated, List
 from pydantic import EmailStr, field_validator, StringConstraints
@@ -41,6 +41,9 @@ class userCreate(BaseModel):
     phone_number: Optional[str] = None
     school: Optional[str] = None
     upcoming_events: Optional[upcoming_event] = None
+    height: Optional[str] = None
+    weight: Optional[str] = None
+    age: Optional[str] = None
 
 class userReturn(BaseModel):
     first_name: Optional[str]
@@ -50,6 +53,9 @@ class userReturn(BaseModel):
     school: Optional[str] = None
     about: Optional[str] = None
     upcoming_events: Optional[upcoming_event] = None
+    height: Optional[str] = None
+    weight: Optional[str] = None
+    age: Optional[str] = None
 
     @model_serializer
     def serialize(self):
@@ -72,6 +78,13 @@ class userUpdateHeader(BaseModel):
     phone_number: Optional[str]
     email: Optional[EmailStr]
 
+class userBuild(BaseModel):
+    height: Optional[str]
+    weight: Optional[str]
+    age: Optional[str]
+    school: Optional[str]
+    user_type: Optional[str]
+
 class verificationRequest(BaseModel):
     email: EmailStr
     code: int
@@ -81,9 +94,9 @@ class Token(BaseModel):
     token_type: str
 
 class TokenData(BaseModel):
-    first_name: Optional[str] = None
-    last_name: Optional[str] = None
     email: Optional[EmailStr] = None
+    first_time_login: Optional[bool] = None
+
 
 class VerificationTokenData(BaseModel):
     email: Optional[EmailStr] = None
@@ -144,3 +157,26 @@ class overall_stat_return(BaseModel):
 
     class Config:
         orm_mode = True
+
+class highlight_return(BaseModel):
+    title: str
+    content: str
+    description: Optional[Annotated[str, StringConstraints(max_length=150)]] = None
+    thumbnail: Optional[str]
+    date: str
+
+    @field_serializer('content')
+    def embed_yt_url(self, v: str):
+        if 'youtube' in v:
+            embed_id = v.split("v=")[1]
+            v = f"https://www.youtube.com/embed/{embed_id}"
+            return v
+
+    class Config:
+        orm_mode = True
+        json_encoders = {
+            datetime: lambda v: v.strftime("%d/%m/%Y")
+        }
+
+class user_query(BaseModel):
+    content: Optional[str]
