@@ -11,6 +11,7 @@ services:
     environment:
       EMAIL: ${EMAIL}
       PASSWORD: ${APP_PASSWORD}
+      OLLAMA_BASE_URL: http://ollama:11434
     volumes:
       - ./backend:/usr/src/backend
       - ./.env:/usr/src/backend/.env
@@ -67,3 +68,17 @@ services:
       - "./docker/postgres:/home/postgres/data"
     working_dir: /home/postgreslocal
     restart: always
+
+  ollama:
+    image: ollama/ollama:latest
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    volumes: 
+      - ollama:/root/.ollama
+      - ./start.sh:/start.sh
+    ports:
+      - "11434:11434"
+    restart: unless-stopped
+volumes:
+  ollama:

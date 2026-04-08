@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from .databases.MongoDB import init_db
-from .routers import preferences, users, auth, highlights, stats
+from .routers import preferences, users, auth, highlights, stats, search
 # from .messaging_system import messaging_router
 from . import models
 import asyncio
@@ -13,6 +13,8 @@ from .routers.messaging_system import messaging_router
 import json
 from .databases.PostgresDB import get_db, engine, SessionLocal
 from sqlalchemy.orm import Session
+
+from .Search_System import Indexing
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -38,10 +40,15 @@ def populate_dbs():
         except Exception as e:
             print(e)
 
+def get_docs():
+    docs = models.users.find_all().to_list()
+    return docs
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await init_db()
     populate_dbs()
+    await Indexing.build_vectorstore()
     yield
 
 async def redis_listener():
@@ -69,3 +76,4 @@ app.include_router(highlights.router)
 app.include_router(messaging_router.router)
 app.include_router(stats.router)
 app.include_router(preferences.router)
+app.include_router(search.router)

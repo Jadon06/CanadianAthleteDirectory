@@ -1,8 +1,7 @@
-import { Button, InputGroup, Card, Nav} from 'react-bootstrap';
-import { useEffect, useState } from 'react';
+import { Button, Card, InputGroup } from 'react-bootstrap';
+import { useState } from 'react';
 import Form from 'react-bootstrap/Form';
-import { useNavigate, Navigate, useParams } from 'react-router-dom';
-import Alert from 'react-bootstrap/Alert';
+import { useNavigate, useParams } from 'react-router-dom';
 import Select from 'react-select'
 
 interface Option {
@@ -14,8 +13,9 @@ interface userBuild {
     height: string;
     weight: string;
     age: string;
-    school: Option;
-    user_type: Option;
+    school: string;
+    user_type: string;
+    profile_picture: string;
 }
 
 const schoolOptions = [
@@ -45,13 +45,16 @@ export default function VerifyCreateAndLogin() {
     const [showWelcomePage, setShowWelcomePage] = useState(true)
     const [showUserDetailsPage, setShowUserDetailsPage] = useState(false)
     const [showExtraDetailsPage, setShowExtraDetailsPage] = useState(false)
+    const [showProfilePhotoPage, setShowProfilePhotoPage] = useState(false)
+    const [profileImagePreview, setProfileImagePreview] = useState("")
 
     const [newBuild, setNewBuild] = useState<userBuild>({
         height: "",
         weight: "",
         age: "",
-        school: {value: "", label: ""},
-        user_type: {value: "", label: ""}
+        school: "",
+        user_type: "",
+        profile_picture: ""
     })
 
     const handleChange = (key: keyof userBuild, value: string) => {
@@ -79,35 +82,92 @@ export default function VerifyCreateAndLogin() {
 
     const navigate = useNavigate()
 
+    const isStepOneComplete =
+        newBuild.height.trim() !== "" &&
+        newBuild.weight.trim() !== "" &&
+        newBuild.age.trim() !== ""
+
+    const isStepTwoComplete =
+        newBuild.school.trim() !== "" &&
+        newBuild.user_type.trim() !== ""
+
+    const isStepThreeComplete = newBuild.profile_picture.trim() !== ""
+
     const handleClickNext1 = () => {
         setShowWelcomePage(false)
         setShowUserDetailsPage(true)
     }
 
     const handleClickNext2 = () => {
+        if (!isStepOneComplete) {
+            return
+        }
         setShowUserDetailsPage(false)
         setShowExtraDetailsPage(true)
     }
 
+    const handleClickNext3 = () => {
+        if (!isStepTwoComplete) {
+            return
+        }
+        setShowExtraDetailsPage(false)
+        setShowProfilePhotoPage(true)
+    }
+
+    const handleProfileImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0]
+        if (!file) {
+            return
+        }
+
+        const reader = new FileReader()
+        reader.onload = () => {
+            if (typeof reader.result === 'string') {
+                setProfileImagePreview(reader.result)
+                setNewBuild((prev) => ({
+                    ...prev,
+                    profile_picture: reader.result as string
+                }))
+            }
+        }
+        reader.readAsDataURL(file)
+    }
+
     const handleClickFinish = async() => {
+        if (!isStepOneComplete || !isStepTwoComplete || !isStepThreeComplete) {
+            return
+        }
         await create_user()
         navigate("/login")
     }
     
     return (
-        <>
+        <div className="verify-layout">
             {showWelcomePage && 
-                <div>
-                    <div style={{border: "1px solid black", height: "800px", width: "800px"}}>
-                        <h1>Welcome to Northern Athletics</h1>
-                        <div>Your Account has been verified, please press next to complete your account setup</div>
-                        <Button onClick={handleClickNext1} style={{bottom: "10px", right: "10px"}}>Next</Button>
+                <Card className="verify-step-card">
+                    <div className="verify-hero">
+                        <div className="eyebrow">Account verified</div>
+                        <h1 className="section-title">Welcome to Northern Athletics</h1>
+                        <p className="section-subtitle">Your account is active. Continue through setup so your profile looks complete from day one.</p>
                     </div>
-                </div>
+                    <div className="verify-stage">
+                        <span className="verify-step-pill">Verified</span>
+                        <span className="verify-step-pill">Profile details</span>
+                        <span className="verify-step-pill">School and role</span>
+                        <span className="verify-step-pill">Profile photo</span>
+                    </div>
+                    <div className="modal-action-row">
+                        <Button className="action-button btn" onClick={handleClickNext1}>Next</Button>
+                    </div>
+                </Card>
             }
             {showUserDetailsPage && 
-                <div style={{border: "1px solid black", height: "800px", width: "800px"}}>
-                    <InputGroup className="input-settings">
+                <Card className="verify-step-card">
+                    <div className="verify-hero">
+                        <div className="eyebrow">Step 1 of 3</div>
+                        <h1 className="section-title">Add your core profile details.</h1>
+                    </div>
+                    <InputGroup className="input-settings modal-input">
                         <InputGroup.Text id="height">Height</InputGroup.Text>
                         <Form.Control
                             placeholder={"Enter height in cm(height in ft/in x 30.48)"}
@@ -131,42 +191,81 @@ export default function VerifyCreateAndLogin() {
                             onChange={e => handleChange("age", e.target.value)}
                         />
                     </InputGroup>
-                    <Button onClick={handleClickNext2}>Next</Button>
-                </div>
+                    <div className="modal-action-row">
+                        <Button className="action-button btn" onClick={handleClickNext2} disabled={!isStepOneComplete}>Next</Button>
+                    </div>
+                </Card>
             }
             {showExtraDetailsPage && 
-                <div style={{border: "1px solid black", height: "800px", width: "800px"}}>
-                    <InputGroup className="input-settings">
+                <Card className="verify-step-card">
+                    <div className="verify-hero">
+                        <div className="eyebrow">Step 2 of 3</div>
+                        <h1 className="section-title">Tell us where you play.</h1>
+                    </div>
+                    <InputGroup className="input-settings modal-input">
                         <InputGroup.Text id="school">School</InputGroup.Text>
-                        <div style={{flex: "1", }}>
-                            <Select<Option>
-                                className="basic-single"
-                                classNamePrefix="select"
-                                options={schoolOptions} 
+                        <div style={{ flex: "1" }}>
+                            <Select<Option, false>
+                                classNamePrefix="modal-select"
+                                options={schoolOptions}
                                 placeholder={"School name"}
-                                value={newBuild.school}
-                                onChange={(option) =>
-                                    handleChange("school", option?.value || "")}
-                                />
+                                value={schoolOptions.find(option => option.value === newBuild.school) ?? null}
+                                onChange={(option) => setNewBuild(prev => ({ ...prev, school: option?.value || "" }))}
+                            />
                         </div>
                     </InputGroup>
-                    <InputGroup className="input-settings">
+                    <InputGroup className="input-settings modal-input">
                         <InputGroup.Text id="userType">Who are you?</InputGroup.Text>
-                        <div style={{flex: "1", }}>
-                            <Select<Option>
-                                className="basic-single"
-                                classNamePrefix="select"
-                                options={userTypeOptions} 
+                        <div style={{ flex: "1" }}>
+                            <Select<Option, false>
+                                classNamePrefix="modal-select"
+                                options={userTypeOptions}
                                 placeholder={"Select"}
-                                value={newBuild.user_type}
-                                onChange={(option) =>
-                                    handleChange("user_type", option?.value || "")}
-                                />
+                                value={userTypeOptions.find(option => option.value === newBuild.user_type) ?? null}
+                                onChange={(option) => setNewBuild(prev => ({ ...prev, user_type: option?.value || "" }))}
+                            />
                         </div>
                     </InputGroup>
-                    <Button onClick={handleClickFinish}>Finish</Button>
-                </div>
+                    <div className="modal-action-row">
+                        <Button className="action-button btn" onClick={handleClickNext3} disabled={!isStepTwoComplete}>Next</Button>
+                    </div>
+                </Card>
             }
-        </>
+            {showProfilePhotoPage &&
+                <Card className="verify-step-card">
+                    <div className="verify-hero">
+                        <div className="eyebrow">Step 3 of 3</div>
+                        <h1 className="section-title">Upload or take a profile picture.</h1>
+                        <p className="section-subtitle">This is required to complete your account setup.</p>
+                    </div>
+
+                    <InputGroup className="input-settings modal-input">
+                        <InputGroup.Text id="profilePhoto">Profile picture</InputGroup.Text>
+                        <div style={{ flex: "1" }}>
+                            <input
+                                className="form-control"
+                                type="file"
+                                accept="image/*"
+                                capture="user"
+                                onChange={handleProfileImageChange}
+                            />
+                        </div>
+                    </InputGroup>
+
+                    {profileImagePreview && (
+                        <div style={{ marginTop: "12px" }}>
+                            <div className="network-meta" style={{ marginBottom: "8px" }}>Preview</div>
+                            <div style={{ width: "130px", height: "130px", borderRadius: "16px", overflow: "hidden", border: "1px solid rgba(17, 34, 56, 0.12)" }}>
+                                <img src={profileImagePreview} alt="Profile preview" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                            </div>
+                        </div>
+                    )}
+
+                    <div className="modal-action-row">
+                        <Button className="action-button btn" onClick={handleClickFinish} disabled={!isStepThreeComplete}>Finish</Button>
+                    </div>
+                </Card>
+            }
+        </div>
     );
 } 

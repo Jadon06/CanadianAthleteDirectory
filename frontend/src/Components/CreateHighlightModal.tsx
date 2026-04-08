@@ -1,5 +1,5 @@
 import { Modal, Form, Button, InputGroup } from 'react-bootstrap';
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import type { Highlight } from './HighlightsBody';
 
 export interface CreateHighlightProps {
@@ -42,11 +42,12 @@ export default function CreateHighlightModal({ show, onHide }: CreateHighlightPr
     };
 
     return (
-        <Modal show={show} onHide={onHide} centered>
+        <Modal show={show} onHide={onHide} centered dialogClassName="modal-glass">
             <Modal.Header closeButton>
                 <Modal.Title>Create Highlight</Modal.Title>
             </Modal.Header>
-            <InputGroup style={{marginBottom: "10px"}}>
+            <Modal.Body className="d-grid gap-3">
+            <InputGroup className="modal-input">
                 <InputGroup.Text id="title">title</InputGroup.Text>
                     <Form.Control
                         placeholder={"Enter Here"}
@@ -54,7 +55,7 @@ export default function CreateHighlightModal({ show, onHide }: CreateHighlightPr
                         onChange={e => handleChange("title", e.target.value)}
                     />
             </InputGroup>
-            <InputGroup style={{marginBottom: "10px"}}>
+            <InputGroup className="modal-input">
                 <InputGroup.Text id="content">content</InputGroup.Text>
                     <Form.Control
                         placeholder={".mp4/.mov/.hvec"}
@@ -62,7 +63,7 @@ export default function CreateHighlightModal({ show, onHide }: CreateHighlightPr
                         onChange={e => handleChange("content", e.target.value)}
                     />
             </InputGroup>
-            <InputGroup style={{marginBottom: "10px"}}>
+            <InputGroup className="modal-input">
                 <InputGroup.Text id="description">description</InputGroup.Text>
                     <Form.Control
                         placeholder={"describe the highlight in a few words"}
@@ -70,7 +71,7 @@ export default function CreateHighlightModal({ show, onHide }: CreateHighlightPr
                         onChange={e => handleChange("description", e.target.value)}
                     />
             </InputGroup>
-            <InputGroup style={{marginBottom: "10px"}}>
+            <InputGroup className="modal-input">
                 <InputGroup.Text id="thumbnail">thumbnail</InputGroup.Text>
                     <Form.Control
                         placeholder={".jpg/.png/.img"}
@@ -78,12 +79,10 @@ export default function CreateHighlightModal({ show, onHide }: CreateHighlightPr
                         onChange={e => handleChange("thumbnail", e.target.value)}
                     />
             </InputGroup>
-            <InputGroup className='d-flex justify-content-end' style={{marginBottom: "10px"}}>
-                <Button 
-                    style={{marginRight: "10px"}} onClick={handleClickFinish}>
-                        Finish
-                </Button>
-            </InputGroup>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button className="action-button btn" onClick={handleClickFinish}>Finish</Button>
+            </Modal.Footer>
         </Modal>
     );
 }

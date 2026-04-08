@@ -1,7 +1,7 @@
-import { Button, InputGroup } from 'react-bootstrap';
+import { Button, Card, InputGroup } from 'react-bootstrap';
 import { useState } from 'react';
 import Form from 'react-bootstrap/Form';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Alert from 'react-bootstrap/Alert';
 
 interface new_user {
@@ -102,10 +102,16 @@ export default function Sign_up() {
     };
 
     return (
-        <>
-            <h1 style={{marginBottom: "100px"}}>Sign Up Now</h1>
+        <div className="auth-shell">
+            <div className="auth-hero">
+                <img src="Logo.png" alt="Northern Athletics" className="auth-logo" />
+                <div className="eyebrow">Join the network</div>
+                <h1 className="auth-title">Create your athlete profile</h1>
+                <p className="auth-copy">Set up your account, then build a presence that coaches and teammates can find fast.</p>
+            </div>
 
-            <InputGroup className="input-settings">
+            <Card className="surface-card" style={{ padding: "18px", borderRadius: "24px" }}>
+                <InputGroup className="input-settings">
                     <InputGroup.Text id="first_name">First Name</InputGroup.Text>
                     <Form.Control
                         placeholder={firstNameError || "Enter Here"}
@@ -172,9 +178,15 @@ export default function Sign_up() {
                 </Alert>
             )}
 
-            <Button variant='light' className='normal-button' onClick={handleClick} style={{marginTop: "50px", fontSize: "20px"}}>
-                Finish
-            </Button>
-        </>
+                <div className="d-flex flex-column align-items-center gap-3 mt-4">
+                    <Button variant='light' className='normal-button' onClick={handleClick} style={{ fontSize: "1rem", minWidth: "160px" }}>
+                        Finish
+                    </Button>
+                    <div className="muted-copy">
+                        Already have an account? <Link to="/login">Sign in</Link>
+                    </div>
+                </div>
+            </Card>
+        </div>
     );
 }

@@ -1,9 +1,10 @@
 from langchain.agents import create_agent
+
 from . import Indexing, tools
 
 
 tools = [tools.retrieve_context]
-MODEL = Indexing.MODEL
+MODEL = Indexing.llm
 # If desired, specify custom instructions
 prompt = (
     "You have access to a tool that retrieves context from a user database. "

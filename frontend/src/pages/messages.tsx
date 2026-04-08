@@ -1,45 +1,84 @@
-import { Modal, Form, InputGroup, Card, Container, Table, Button } from 'react-bootstrap';
-import { IoIosHome, IoIosNotifications } from "react-icons/io";
-import { FaUserFriends, FaSearch } from "react-icons/fa";
-import { LuMessageSquareMore } from "react-icons/lu";
+import { Card, Container } from 'react-bootstrap';
+import { FaInbox } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react'
+import type { ChangeEvent, KeyboardEvent } from 'react';
+import CustomNavBar from '../Components/NavigationBar';
 
 export default function Messages() {
-    
     const navigate = useNavigate()
 
     const handleClickHome = () => {
-        navigate("/")
+        navigate('/feed')
     }
 
     const handleClickMessages = () => {
-        navigate("/messages")
+        navigate('/messages')
     }
-    
-    return (
-        <div className='d-flex flex-row'>
-            <div className='d-flex flex-column' style={{alignItems: "center"}}>
-                <div className='d-flex flex-column'style={{alignItems: "center", position: "absolute", left: "30px", top: "32px"}}>
-                    <img 
-                        src="/Logo.png" 
-                        alt="Edit" 
-                        onClick={handleClickHome}
-                        style={{ cursor: "pointer", height: "80px", width: "80px", 
-                        marginBottom: "10px", marginLeft: "15px"}}
-                    />
-                    <IoIosHome id='home' className='buttonbar-button'/>
-                    <FaUserFriends id='network' className='buttonbar-button'/>
-                    <IoIosNotifications id='notifications' className='buttonbar-button'/>
-                    <LuMessageSquareMore id='messages' className='buttonbar-button' onClick={handleClickMessages}/>
-                    <FaSearch id='search' className='buttonbar-button'/>
-                </div>
-            </div>
-            <Container data-bs-spy="scroll" style={{border: "1px solid black", width: "400px", minHeight: "550px", position: "absolute", left: "200px", top: "45px"}}>
-                
-                
-            </Container>
 
+    const handleClickNotifications = () => {
+        navigate('/notifications')
+    }
+
+    const handleClickDashboard = () => {
+        navigate('/dashboard')
+    }
+
+    const handleClickSearch = (event: KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
+            navigate('/search-results')
+        }
+    }
+
+    const handleChangeSearch = (event: ChangeEvent<HTMLInputElement>) => {
+        void event.target.value
+    }
+
+    return (
+        <div className="app-shell hero-shell">
+            <CustomNavBar
+                handleClickHome={handleClickHome}
+                handleClickMsgs={handleClickMessages}
+                handleClickSearch={handleClickSearch}
+                handleClickNotifications={handleClickNotifications}
+                handleChangeSearch={handleChangeSearch}
+                handleClickDashboard={handleClickDashboard}
+            />
+
+            <Container fluid className="message-page-shell">
+                <Card className="message-ipad-shell">
+                    <div className="message-ipad-grid">
+                        <aside className="message-sidebar">
+                            <div className="message-sidebar-head">
+                                <h3>Inbox</h3>
+                            </div>
+
+                            <div className="message-conversation-list" style={{ height: '100%' }}>
+                                <div className="muted-copy" style={{ textAlign: 'center', marginTop: '14px' }}>
+                                    Inbox Empty
+                                </div>
+                            </div>
+                        </aside>
+
+                        <section className="message-thread-pane">
+                            <div className="message-thread-head">
+                                <div>
+                                    <h3>Messages</h3>
+                                    <div className="network-meta">No active conversation</div>
+                                </div>
+                            </div>
+
+                            <div className="message-thread-body">
+                                <div className="muted-copy" style={{ textAlign: 'center', marginTop: '14px' }}>
+                                    Inbox Empty
+                                </div>
+                                <div className="muted-copy" style={{ textAlign: 'center' }}>
+                                    Select a conversation once messages are available.
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </Card>
+            </Container>
         </div>
     );
 }

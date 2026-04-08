@@ -1,7 +1,7 @@
-import { Button, InputGroup, Card} from 'react-bootstrap';
+import { Button, Card, InputGroup } from 'react-bootstrap';
 import { useState } from 'react';
 import Form from 'react-bootstrap/Form';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Alert from 'react-bootstrap/Alert';
 
 interface credentials {
@@ -15,8 +15,6 @@ export default function Login() {
         password: ""
     });
     const [loginError, setLoginError] = useState(false)
-    const [isFirstTime, setIsFirstTime] = useState(true)
-
     const handleChange = (key: keyof credentials, value: string) => {
         setCredentials(prev => ({
             ...prev,
@@ -52,16 +50,15 @@ export default function Login() {
     }
 
     return (
-        <>
-            <Card style={{border: "1px solid black"}}>
-                <div className="center-container">
-                    <img 
-                        src='Logo.png'
-                        height={"150px"}
-                        width={"150px"}
-                    />
-                </div>
+        <div className="auth-shell">
+            <div className="auth-hero">
+                <img src="Logo.png" alt="Northern Athletics" className="auth-logo" />
+                <div className="eyebrow">Athlete network</div>
+                <h1 className="auth-title">Sign in to your athlete workspace</h1>
+                <p className="auth-copy">Pick up where you left off: messages, profile updates, highlights, and search.</p>
+            </div>
 
+            <Card className="surface-card" style={{ padding: "18px", borderRadius: "24px" }}>
                 <InputGroup className="input-settings">
                         <InputGroup.Text id="email">Email</InputGroup.Text>
                         <Form.Control
@@ -80,11 +77,13 @@ export default function Login() {
                             onChange={e => handleChange("password", e.target.value)}
                         />
                     </InputGroup>
-                <div className="center-container">
-                    <Button variant='light' className='normal-button' onClick={handleClick} 
-                    style={{marginTop: "30px", fontSize: "20px", width: "100px"}}>
-                        login
+                <div className="d-flex flex-column align-items-center gap-3 mt-4">
+                    <Button variant='light' className='normal-button' onClick={handleClick} style={{ fontSize: "1rem", minWidth: "160px" }}>
+                        Login
                     </Button>
+                    <div className="muted-copy">
+                        New here? <Link to="/sign-up">Create an account</Link>
+                    </div>
                 </div>
             </Card>
 
@@ -93,6 +92,6 @@ export default function Login() {
                     username or password incorrect
                 </Alert>
             )}
-        </>
+        </div>
     );
 }

@@ -7,7 +7,7 @@ import Feed from "./pages/feed.tsx"
 import Profile from "./pages/profile.tsx"
 import VerifyCreateAndLogin from "./pages/verifyAndCreate.tsx"
 import Messages from "./pages/messages.tsx"
-import Results from "./pages/results.tsx"
+import SearchResults from "./pages/search_results.tsx"
 import Notifications from "./pages/notifications.tsx"
 import Analytics from "./pages/analytics.tsx"
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -27,7 +27,7 @@ function App() {
       <Route path="/dashboard/" element={<Profile />}/>
       <Route path="/verifyandcreate/:token" element={<VerifyCreateAndLogin />}/>
       <Route path="/messages/" element={<Messages />}/>
-      <Route path="/search-results" element={<Results />} />
+      <Route path="/search-results" element={<SearchResults />} />
       <Route path="/notifications" element={<Notifications />} />
       <Route path="/analytics" element={<Analytics />} />
     </Routes>

@@ -1,4 +1,4 @@
-import { Modal, Button, Form, Container, Nav, NavDropdown, Card, ButtonGroup, Table, ButtonToolbar, ModalBody} from 'react-bootstrap';
+import { Modal, Table } from 'react-bootstrap';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
@@ -23,13 +23,13 @@ export default function FiltersModal({ show, onHide } : ViewFiltersProp) {
     
     
     return (
-        <Modal show={show} onHide={onHide} centered>
+        <Modal show={show} onHide={onHide} centered dialogClassName="modal-glass">
             <Modal.Header closeButton>
-                <h1 style={{fontSize: "25px"}}>Edit Stat Selection</h1>
+                <h1 className="section-title" style={{ fontSize: "1.4rem" }}>Edit Stat Selection</h1>
             </Modal.Header>
-            <ModalBody>
+            <Modal.Body>
                 <FormGroup>
-                    <Table>
+                    <Table borderless>
                         <tbody>
                             <tr>
                                 <td><FormControlLabel control={<Checkbox
@@ -99,7 +99,7 @@ export default function FiltersModal({ show, onHide } : ViewFiltersProp) {
                         </tbody>
                     </Table>
                 </FormGroup>
-            </ModalBody>
+            </Modal.Body>
         </Modal>
     );
 }

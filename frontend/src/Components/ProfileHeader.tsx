@@ -1,5 +1,4 @@
-import { Button, Form, Container, Nav, NavDropdown, Card, ButtonGroup, Table, ButtonToolbar, Tab} from 'react-bootstrap';
-import { useEffect, useState } from 'react';
+import { Button, Card, Container } from 'react-bootstrap';
 
 interface ProfileHeaderProps {
     ProfilePic: string;
@@ -8,10 +7,6 @@ interface ProfileHeaderProps {
     Position: string;
     Height: string;
     Weight: string;
-    PPG: string;
-    Assists: string;
-    Rebounds: string;
-    FieldGoal: string;
     School: string;
     Contact: () => void;
     Connect: () => void;
@@ -19,7 +14,7 @@ interface ProfileHeaderProps {
     CreateHighlight: () => void;
 }
 
-export default function ProfileHeader({ ProfilePic, Name, Age, Position, Height, Weight, PPG, Assists, Rebounds, FieldGoal, School, Contact, Connect, Analytics, CreateHighlight } : ProfileHeaderProps) {
+export default function ProfileHeader({ ProfilePic, Name, Age, Position, Height, Weight, School, Contact, Connect, Analytics, CreateHighlight } : ProfileHeaderProps) {
     const schoolIcons: Record<string, string> = {
         "Acadia University": "https://upload.wikimedia.org/wikipedia/en/0/06/Acadia_University_Coat_of_Arms_2017.jpg",
         "Dalhousie University": "DalhousieIcon.jpeg",
@@ -33,82 +28,50 @@ export default function ProfileHeader({ ProfilePic, Name, Age, Position, Height,
         "University of Prince Edward Island (UPEI)": "https://images.squarespace-cdn.com/content/v1/597102da2e69cf32c2bb021f/1561482190390-0Q6FMWYWHGLPUZIZQEFE/UPEI+-+Fathom_Studio.png?format=1000w"
     }
     
+    const schoolIcon = schoolIcons[School] ?? "nopfp_img.jpg"
+
     return (
-        <Container style={{border: "1px solid black", height: "240px", width: "700px"}}>
-            <div className='d-flex flex-row gap-2'>
-                <Container style={{border: "1px solid black", height: "200px", width: "200px", marginTop: "20px"}}>
-                    <img 
-                        src={ProfilePic ?? "nopfp_img.jpg"}
-                        style={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover"
-                        }}
-                    />
-                </Container>
-                <Container style={{height: "200px", width: "450px", marginTop: "20px"}}>
-                    <div className='d-flex flex-column'>
-                        <Table size="sm" style={{marginBottom: "0px", marginTop: "10px", border: "transparent"}}>
-                            <thead>
-                                <tr style={{ textAlign: "left" }}>
-                                    <th>
-                                        <div className="d-flex justify-content-between align-items-center w-100">
-                                            <span>
-                                                {Name ?? "Name"}, {Position ?? "position"}
-                                            </span>
-                                            <div
-                                                style={{
-                                                    width: "30px",
-                                                    height: "30px",
-                                                    border: "1px solid black"
-                                                }}>
-                                                    <img 
-                                                        src={schoolIcons[School]}
-                                                        style={{
-                                                            width: "100%",
-                                                            height: "100%",
-                                                            objectFit: "cover"
-                                                        }}
-                                                        title={School}
-                                                    />
-                                            </div>
-                                        </div>
-                                    </th>
-                                </tr>
-                            </thead>  
-                        </Table>
-                        <Container style={{border: "1px solid black", height: "auto"}}>
-                        <Table size='sm'>
-                            <thead>
-                                <tr style={{ textAlign: "left", border: "black"}}>
-                                    <th>Stats</th>
-                                </tr>
-                                <tr style={{ textAlign: "left", border: "transparent"}}>
-                                    <th>Ht: {Height ?? "0ft"}</th>
-                                    <th>Wt: {Weight ?? "0lbs"}</th>
-                                    <th>Age: {Age ?? "0"}</th>
-                                    <th>PPG: {PPG ?? "0ppg"}</th>
-                                </tr>
-                            </thead>
-                            <thead>
-                                <tr style={{ textAlign: "left", border: "transparent"}}>
-                                    <th>AST: {Assists ?? "0ast"}</th>
-                                    <th>Reb: {Rebounds ?? "0reb"}</th>
-                                    <th>Fg%: {FieldGoal ?? "0%"}</th>
-                                </tr>
-                            </thead>
-                        </Table>
-                        </Container>
+        <Container className="profile-hero-grid page-section" style={{ marginTop: "14px" }}>
+            <Card className="profile-avatar-card">
+                <div className="eyebrow" style={{ marginBottom: "12px" }}>Athlete profile</div>
+                <div className="profile-avatar-figure">
+                    <img src={ProfilePic || "nopfp_img.jpg"} alt={Name || "Athlete profile"} />
+                </div>
+            </Card>
+
+            <Card className="profile-meta-card">
+                <div className="section-heading" style={{ marginBottom: "10px" }}>
+                    <div>
+                        <div className="eyebrow" style={{ marginBottom: "8px" }}>Recruiting-ready</div>
+                        <h1 className="section-title" style={{ marginBottom: "8px" }}>{Name || "Athlete Name"}</h1>
+                        <div className="network-meta">{Position || "Position"}</div>
                     </div>
-                    <div style={{ display: "flex", justifyContent: "flex-start", marginTop: "6px", gap: "5px"}}>
-                        <Button className="hyperlink btn" onClick={Connect}>Connect</Button>
-                        <Button className="hyperlink btn" onClick={Contact}>Contact</Button>
-                        <Button className="hyperlink btn" onClick={Analytics}>Analytics</Button>
-                        <Button className="hyperlink btn" onClick={CreateHighlight}>Add Highlight</Button>
+                    <div className="network-avatar">
+                        <img src={schoolIcon} alt={School || "School"} title={School || "School"} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "16px" }} />
                     </div>
-                    
-                </Container>
-            </div>
+                </div>
+
+                <p className="hero-copy" style={{ marginBottom: "12px" }}>
+                    A modern athlete profile should read like a portfolio: clear identity, strong stats, and fast actions for people who want to connect.
+                </p>
+
+                <div className="stats-grid" style={{ gridTemplateColumns: "repeat(3, minmax(0, 1fr))" }}>
+                    <div className="stat-card"><div className="stat-value">{Height || "0ft"}</div><div className="stat-label">Height</div></div>
+                    <div className="stat-card"><div className="stat-value">{Weight || "0lbs"}</div><div className="stat-label">Weight</div></div>
+                    <div className="stat-card"><div className="stat-value">{Age || "0"}</div><div className="stat-label">Age</div></div>
+                </div>
+
+                <div className="profile-badge-row" style={{ marginTop: "12px" }}>
+                    <span className="profile-stat-chip">{School || "School"}</span>
+                </div>
+
+                <div className="profile-action-row" style={{ marginTop: "12px" }}>
+                    <Button className="ghost-button btn" onClick={Connect}>Connect</Button>
+                    <Button className="ghost-button btn" onClick={Contact}>Contact</Button>
+                    <Button className="ghost-button btn" onClick={Analytics}>Analytics</Button>
+                    <Button className="action-button btn" onClick={CreateHighlight}>+ Add Highlight</Button>
+                </div>
+            </Card>
         </Container>
     );
 }

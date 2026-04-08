@@ -1,14 +1,8 @@
-import { Button, Form, Container, Nav, NavDropdown, Card, ButtonGroup, Table, ButtonToolbar} from 'react-bootstrap';
-import { CiEdit } from "react-icons/ci";
-import { IoIosHome, IoIosNotifications } from "react-icons/io";
-import { FaUserFriends, FaSearch } from "react-icons/fa";
-import { LuMessageSquareMore } from "react-icons/lu";
-import { useNavigate, useParams } from 'react-router-dom';
+import { Container } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
 import "../App.css"
-import EditHeaderProfile from '../Components/EditHeaderModal.tsx';
-import EditUpcomingEvents from '../Components/EditUpcomingEvents.tsx';
 import ContactInfo from '../Components/ContactInfoModal.tsx';
 import CustomNavBar from '../Components/NavigationBar.tsx';
 import ProfileHeader from '../Components/ProfileHeader.tsx';
@@ -16,14 +10,9 @@ import HighlightsBody from '../Components/HighlightsBody.tsx';
 import type { Highlight } from '../Components/HighlightsBody.tsx';
 import type { OverallStatData } from '../Components/AnalyticsHeader.tsx';
 import CreateHighlightModal from '../Components/CreateHighlightModal.tsx';
-import { useTheme } from '@emotion/react';
 
 export default function profile(){
-    const [isEditHeaderModalVisible, setIsEditHeaderModalVisible] = useState(false)
-    const [isEditGameScheduleModalVisible, setIsEditGameScheduleModalVisible] = useState(false)
     const [isContactInfoVisible, setIsContactInfoVisible] = useState(false)
-    const [isEditEducationVisible, setIsEditEducationVisible] = useState(false)
-    const [searchData, setSearchData] = useState("")
     const [isCreateHighlightModalVisible, setCreateHighlightModalVisible] = useState(false)
 
     const [overallData, setOverallData] = useState<OverallStatData>({
@@ -121,7 +110,7 @@ export default function profile(){
     }, []);
 
     const handleClickHome = () => {
-        navigate("/")
+        navigate("/feed")
     }
 
     const handleClickMessages = () => {
@@ -132,16 +121,10 @@ export default function profile(){
         navigate("/notifications")
     }
 
-    const handleClickDashboard = () => {
-        navigate("/dashboard")
-    }
+    const handleClickDashboard = () => navigate("/dashboard")
 
     const handleClickAnalytics = () => {
         navigate("/analytics")
-    }
-
-    const runSearch = async(data: string) => {
-        const response = await fetch("")
     }
 
     const handleClickSearch = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -152,8 +135,7 @@ export default function profile(){
     }
 
     const handleChangeSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const value = event.target.value;
-        runSearch(value); // fire async logic without returning a Promise
+        void event.target.value;
     };
 
     const handleShowContactModal = () => {
@@ -165,15 +147,13 @@ export default function profile(){
     }
 
     const handleHideModal = () => {
-        setIsEditHeaderModalVisible(false)
         setIsContactInfoVisible(false)
-        setIsEditEducationVisible(false)
         setCreateHighlightModalVisible(false)
         fetchUser();
     }
 
     return (
-        <>
+        <div className="app-shell hero-shell">
             <CustomNavBar 
                 handleClickHome={handleClickHome}
                 handleClickMsgs={handleClickMessages}
@@ -182,7 +162,17 @@ export default function profile(){
                 handleChangeSearch={handleChangeSearch}
                 handleClickDashboard={handleClickDashboard}
             />
-            
+
+            <Container className="page-section" style={{ paddingTop: "18px" }}>
+                <div className="section-heading">
+                    <div>
+                        <div className="eyebrow" style={{ marginBottom: "10px" }}>Profile</div>
+                        <h1 className="section-title">A polished home base for your athletic identity.</h1>
+                    </div>
+                    <p className="section-subtitle">Your profile, highlights, and stats now live inside a more premium layout.</p>
+                </div>
+            </Container>
+
             <ProfileHeader 
                 Contact={handleShowContactModal}
                 Connect={() => {}}
@@ -194,10 +184,6 @@ export default function profile(){
                 Position={"Position: " + overallData.position + " "}
                 Height={userData?.height + "cm"}
                 Weight={userData?.weight + "lbs"}
-                PPG={overallData.Points_per_game + " "}
-                Assists={overallData.Assists + " "}
-                Rebounds={overallData.Rebounds_per_game + " "}
-                FieldGoal={overallData.FG_Pct + "%"}
                 School={userData?.school + ""}
 
             />
@@ -214,6 +200,6 @@ export default function profile(){
             <HighlightsBody 
                 highlights={highlights} 
             />
-        </>
+        </div>
     );
 }

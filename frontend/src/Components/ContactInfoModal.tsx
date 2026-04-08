@@ -1,4 +1,4 @@
-import { Modal, Form, Button, InputGroup, Card, Table, ModalBody } from 'react-bootstrap';
+import { Modal, Card, Table } from 'react-bootstrap';
 import { useEffect, useState } from 'react'
 
 export interface ViewContactInfoProp {
@@ -28,25 +28,25 @@ export default function ContactInfo({ show, onHide } : ViewContactInfoProp) {
     }, [show])
 
     return (
-        <Modal show={show} onHide={onHide} centered>
+        <Modal show={show} onHide={onHide} centered dialogClassName="modal-glass">
             <Modal.Header closeButton>
                     <Modal.Title>Contact Info</Modal.Title>
             </Modal.Header>
-            <ModalBody>
-            <Card>
-                <Table>
+            <Modal.Body>
+            <Card className="surface-card" style={{ padding: "8px", borderRadius: "20px" }}>
+                <Table borderless className="mb-3">
                     <thead>
                         <tr>
                             <th>phone-number</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr style={{border: "transparent"}}>
+                        <tr>
                             <td>{phoneNumber}</td>
                         </tr>
                     </tbody>
                 </Table>
-                <Table>
+                <Table borderless className="mb-0">
                     <thead>
                         <tr>
                             <th>email</th>
@@ -54,12 +54,12 @@ export default function ContactInfo({ show, onHide } : ViewContactInfoProp) {
                     </thead>
                     <tbody>
                         <tr>
-                            <td style={{border: "transparent"}}>{email}</td>
+                            <td>{email}</td>
                         </tr>
                     </tbody>
                 </Table>
             </Card>
-            </ModalBody>
+            </Modal.Body>
         </Modal>
     );
     

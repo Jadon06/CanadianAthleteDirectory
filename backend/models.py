@@ -25,8 +25,6 @@ class users(Document):
     profile_picture: Optional[str] = None
     phone_number: Optional[str] = None
     school: Optional[str] = None
-    highlights: Optional[schemas.highlight] = None
-    upcoming_events: Optional[schemas.upcoming_event] = None
     position: Optional[str] = None
     height: Optional[str] = None
     weight: Optional[str] = None

@@ -1,73 +1,86 @@
-import { Button, Form, Navbar, Container, Nav, NavDropdown, Card, ButtonGroup} from 'react-bootstrap';
+import { Button, Card, Container } from 'react-bootstrap';
+import { FaPlay } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
+import CustomNavBar from '../Components/NavigationBar.tsx';
+import type { ChangeEvent, KeyboardEvent } from 'react';
 
 export default function feed() {
+    const navigate = useNavigate();
+
+    const handleClickHome = () => {
+        navigate("/feed")
+    }
+
+    const handleClickMessages = () => {
+        navigate("/messages")
+    }
+
+    const handleClickNotifications = () => {
+        navigate("/notifications")
+    }
+
+    const handleClickDashboard = () => navigate("/dashboard")
+
+    const handleClickSearch = (event: KeyboardEvent<HTMLInputElement>) => {
+        if (event.key == 'Enter') {
+            navigate("/search-results")
+        }
+    }
+
+    const handleChangeSearch = (event: ChangeEvent<HTMLInputElement>) => {
+        void event.target.value;
+    };
+
     return (
-        <>
-            <Navbar expand="lg" fixed="top" className="bg-body-tertiary">
-                <Container fluid>
-                    <Navbar.Brand href="/feed" className="d-flex align-items-center" 
-                    style={{marginLeft: "100px"}}>
-                        <img
-                            src="/Logo.png"
-                            width="40"
-                            height="40"
-                            style={{ marginRight: "8px", border: "1px solid red" }}
-                            alt=""
-                        />
-                        NorthernAthlete
-                    </Navbar.Brand>
+        <div className="app-shell hero-shell">
+            <CustomNavBar
+                handleClickHome={handleClickHome}
+                handleClickMsgs={handleClickMessages}
+                handleClickSearch={handleClickSearch}
+                handleClickNotifications={handleClickNotifications}
+                handleChangeSearch={handleChangeSearch}
+                handleClickDashboard={handleClickDashboard}
+            />
 
-                    <Navbar.Toggle aria-controls="main-nav" />
+            <Container className="page-section" style={{ paddingTop: "30px", paddingBottom: "50px" }}>
+                <div className="section-heading">
+                    <div>
+                        <div className="eyebrow" style={{ marginBottom: "12px" }}>
+                            <FaPlay /> Recommended feed
+                        </div>
+                        <h1 className="section-title">A social feed that feels like sport, not noise.</h1>
+                    </div>
+                    <p className="section-subtitle">Recommended clips, athletes, and updates can live in a high-contrast feed with stronger hierarchy.</p>
+                </div>
 
-                    <Navbar.Collapse id="main-nav" className="d-flex justify-content-between">
-                        <Form className="d-flex" style={{ maxWidth: "400px"}}>
-                            <Form.Control type="search" placeholder="search" />
-                            <Button variant="primary" 
-                                style={{background: "red",
-                                border: "0px"
-                            }}>Search</Button>
-                        </Form>
-
-                        <Nav style={{marginRight: "100px"}}>
-                            <Nav.Link>Messages</Nav.Link>
-                            <Nav.Link>Network</Nav.Link>
-                            <Nav.Link>Notifications</Nav.Link>
-                            <NavDropdown title="Profile">
-                            <NavDropdown.Item href="/post">Post</NavDropdown.Item>
-                            <NavDropdown.Item href="/upcoming-event">Upcoming Event</NavDropdown.Item>
-                            <NavDropdown.Item href="/highlight">Highlight</NavDropdown.Item>
-                            <NavDropdown.Item href="/settings">Settings</NavDropdown.Item>
-                            <NavDropdown.Item href="/view">View Profile</NavDropdown.Item>
-                            </NavDropdown>
-                        </Nav>
-                    </Navbar.Collapse>
-                </Container>
-            </Navbar>
-            
-            <h1 style={{fontSize: "25px", marginTop: "0px"}}>Recommended</h1>
-            <ul className='list-group'>
-                <Container style={{width: "fit-content"}}>
-                    {/* loop over the list from the backend to render recommended content using the template below */}
-                    <Container style={{width: "fit-content"}}>
-                        <Card>
-                            <Card.Title>Title</Card.Title>
-                            <iframe 
-                                src="https://www.youtube.com/embed/R4nI6taCb0s?autoplay=1&mute=1&controls=0&loop=1&playlist=R4nI6taCb0s" 
+                <div style={{ display: "grid", gap: "18px" }}>
+                    <Card className="surface-card" style={{ borderRadius: "28px", padding: "18px" }}>
+                        <div className="network-card-top">
+                            <div>
+                                <h3>Featured athlete story</h3>
+                                <div className="network-meta">A modern feed card with a strong media preview and action bar.</div>
+                            </div>
+                            <span className="pill">Live</span>
+                        </div>
+                        <div className="spotlight-frame" style={{ marginBottom: "16px" }}>
+                            <iframe
+                                src="https://www.youtube.com/embed/R4nI6taCb0s?autoplay=1&mute=1&controls=0&loop=1&playlist=R4nI6taCb0s"
                                 allow="autoplay; encrypted-media"
                                 allowFullScreen
+                                title="Featured athlete story"
                             />
-                            <Card.Body>
-                                <Card.Text>Description</Card.Text>
-                                <div className='d-flex flex-row justify-content-center align-items-center'>
-                                    <Button variant='secondary' style={{marginRight: "10px"}}>comment</Button>
-                                    <Button variant='secondary' style={{marginRight: "10px"}}>Like</Button>
-                                    <Button variant='secondary' style={{marginRight: "10px"}}>Repost</Button>
-                                </div>
-                            </Card.Body>
-                        </Card>
-                    </Container>
-                </Container>
-            </ul>
-        </>
+                        </div>
+                        <Card.Body style={{ padding: 0 }}>
+                            <Card.Text className="muted-copy">Use this card pattern for highlights, posts, and updates from across the network.</Card.Text>
+                            <div className='d-flex flex-wrap gap-2'>
+                                <Button className='ghost-button btn'>Comment</Button>
+                                <Button className='ghost-button btn'>Like</Button>
+                                <Button className='ghost-button btn'>Repost</Button>
+                            </div>
+                        </Card.Body>
+                    </Card>
+                </div>
+            </Container>
+        </div>
     );
 }

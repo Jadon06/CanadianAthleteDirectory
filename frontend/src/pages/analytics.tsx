@@ -1,4 +1,4 @@
-import { Button, Form, Container, Nav, NavDropdown, Card, ButtonGroup, Table, ButtonToolbar} from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -6,7 +6,6 @@ import AnalyticsBody from '../Components/AnalyticsBody';
 import AnalyticsHeader from '../Components/AnalyticsHeader';
 import CustomNavBar from '../Components/NavigationBar';
 import type { StatData, OverallStatData } from '../Components/AnalyticsHeader';
-import type { ViewFiltersProp } from '../Components/LineGraphFiltersModal';
 
 const defaultData = {
     first_name: "",
@@ -61,12 +60,10 @@ export default function Analytics() {
     const [statData, setStatData] = useState<StatData>(defaultStatData)
 
     const [overallStatData, setOverallStatData] = useState<OverallStatData>(defaultData)
-    const [showFiltersModal, setShowFiltersModal] = useState(false)
-
     const navigate = useNavigate()
 
     const handleClickHome = () => {
-        navigate("/")
+        navigate("/feed")
     }
 
     const handleClickMessages = () => {
@@ -75,10 +72,6 @@ export default function Analytics() {
 
     const handleClickNotifications = () => {
         navigate("/notifications")
-    }
-
-    const runSearch = async(data: string) => {
-        const response = await fetch("")
     }
 
     const handleClickDashboard = () => {
@@ -94,12 +87,8 @@ export default function Analytics() {
 
     const handleChangeSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
-        runSearch(value); // fire async logic without returning a Promise
+        void value;
     };
-
-    const handleShowFiltersModal = () => {
-        setShowFiltersModal(true)
-    }
 
     const toNumbers = (arr?: string[]) =>
         arr ? arr.map(v => Number(v) || 0) : [0];
@@ -191,7 +180,7 @@ export default function Analytics() {
     }, [])
 
     return (
-        <Container fluid>
+        <div className="app-shell hero-shell">
             <CustomNavBar 
                 handleClickHome={handleClickHome}
                 handleClickMsgs={handleClickMessages}
@@ -200,6 +189,17 @@ export default function Analytics() {
                 handleClickDashboard={handleClickDashboard}
                 handleChangeSearch={handleChangeSearch}
                 />
+
+            <Container className="page-section" style={{ paddingTop: "30px" }}>
+                <div className="section-heading">
+                    <div>
+                        <div className="eyebrow" style={{ marginBottom: "10px" }}>Analytics</div>
+                        <h1 className="section-title">Track performance with a sharper dashboard.</h1>
+                    </div>
+                    <p className="section-subtitle">A cleaner analytics experience for season stats, trends, and scouting-level comparisons.</p>
+                </div>
+            </Container>
+
             <AnalyticsHeader 
                 data={statData}
                 overallData={overallStatData}
@@ -207,6 +207,6 @@ export default function Analytics() {
             <AnalyticsBody 
                 overallData={overallStatData} 
                 />
-        </Container>
+        </div>
     );
 }

@@ -1,12 +1,10 @@
-import { Button, Form, Container, Nav, NavDropdown, Card, ButtonGroup, Table, ButtonToolbar} from 'react-bootstrap';
-import { BarChart } from '@mui/x-charts/BarChart';
+import { Button, Card, Container } from 'react-bootstrap';
 import { LineChart } from '@mui/x-charts/LineChart';
 import { Unstable_RadarChart as RadarChart } from '@mui/x-charts';
 
 import { CiSliderHorizontal } from "react-icons/ci";
 import FiltersModal from './LineGraphFiltersModal';
 import { useState } from 'react';
-import { Typography } from '@mui/material';
 
 export interface StatData {
     first_name: string[];
@@ -75,55 +73,59 @@ export default function AnalyticsHeader({ data, overallData } : statDataProp) {
     }
 
     return (
-        <div className="d-flex flex-row justify-content-start" style={{height: "400px", width: "1200px", border: "1px solid black", position: "relative"}}>
-            <div style={{marginLeft: "20px", marginTop: "30px"}}>
-                <RadarChart
-                    height={300}
-                    series={[{ label: full_name, 
-                        data: [overallData.FG_Pct, overallData.threePT_Pct, overallData.FT_Pct, 
-                            overallData.Rebounds_per_game, overallData.Assists, overallData.Blocks] }]}
-                    radar={{
-                        max: 100,
-                        metrics: ['Fg%', '3pt%', 'Ft%', 'Rpg', 'Asts', 'Blks'],
-                    }}
-                />
-            </div>
-            
-            <LineChart
-                sx={{ width: '100%' }}
-                series={[
-                    { data: data?.pts ?? [0], label: 'pts', yAxisId: 'ptsID' },
-                    { data: data?.ast ?? [0], label: 'asts', yAxisId: 'astsID' },
-                    { data: data?.reb ?? [0], label: 'asts', yAxisId: 'rebID' },
-                ]}
-                xAxis={[{ scaleType: 'point', data: data.game_date, height: 28 }]}
-                yAxis={[
-                    { id: 'ptsID', width: 50 },
-                    { id: 'astsID', position: 'none' },
-                    { id: 'rebID', position: "right" },
-                ]}
-                slotProps={{
-                    legend: {
-                        direction: "vertical",   // stack vertically
-                        position: {
-                            vertical: 'middle',
-                            horizontal: "end",
-                        },
-                    },
-                }}
-            />
-            <div style={{ height: "auto", width: "100px", 
-                    marginTop: "10px", right: "0px", zIndex: 10, position: "absolute"}}>
-                <Button onClick={() => setShowFiltersModal(true)} className="filter btn" style={{height: "30px", display: "flex",
-                    alignItems: "center", justifyContent: "center", gap: "2px"}}>
-                    filters
-                    <CiSliderHorizontal 
-                        style={{cursor: "pointer", height: "20px", width: "20px"}}
-                    />
-                </Button>
-            </div>
+        <Container className="page-section" style={{ marginTop: "28px" }}>
+            <Card className="analytics-hero-card">
+                <div className="section-heading" style={{ marginBottom: "18px" }}>
+                    <div>
+                        <div className="eyebrow" style={{ marginBottom: "10px" }}>Performance view</div>
+                        <h2 className="section-title">Analytics that feel premium and readable.</h2>
+                        <p className="section-subtitle">A compact visual summary for recruiters, coaches, and athletes tracking progress.</p>
+                    </div>
+                    <Button onClick={() => setShowFiltersModal(true)} className="ghost-button btn">
+                        Filters <CiSliderHorizontal />
+                    </Button>
+                </div>
+
+                <div className="analytics-grid">
+                    <Card className="analytics-chart-card">
+                        <div className="eyebrow" style={{ marginBottom: "12px" }}>Overall Stats</div>
+                        <RadarChart
+                            height={320}
+                            series={[{ label: full_name, data: [overallData.FG_Pct, overallData.threePT_Pct, overallData.FT_Pct, overallData.Rebounds_per_game, overallData.Assists, overallData.Blocks] }]}
+                            radar={{
+                                max: 100,
+                                metrics: ['Fg%', '3pt%', 'Ft%', 'Rpg', 'Asts', 'Blks'],
+                            }}
+                        />
+                    </Card>
+
+                    <Card className="analytics-chart-card">
+                        <div className="eyebrow" style={{ marginBottom: "12px" }}>Recent games</div>
+                        <LineChart
+                            sx={{ width: '100%' }}
+                            series={[
+                                { data: data?.pts ?? [0], label: 'Pts', yAxisId: 'ptsID' },
+                                { data: data?.ast ?? [0], label: 'Asts', yAxisId: 'astsID' },
+                                { data: data?.reb ?? [0], label: 'Reb', yAxisId: 'rebID' },
+                            ]}
+                            xAxis={[{ scaleType: 'point', data: data.game_date, height: 28 }]}
+                            yAxis={[
+                                { id: 'ptsID', width: 50 },
+                                { id: 'astsID', position: 'none' },
+                                { id: 'rebID', position: 'right' },
+                            ]}
+                            slotProps={{
+                                legend: {
+                                    direction: "vertical",
+                                    position: { vertical: 'middle', horizontal: 'end' },
+                                },
+                            }}
+                        />
+                    </Card>
+                </div>
+            </Card>
 
             <FiltersModal show={showFiltersModal} onHide={handleHideModal} />
-        </div>
+        </Container>
     );
 }
