@@ -1,6 +1,6 @@
-from pydantic import BaseModel, EmailStr, model_serializer, field_serializer
+from pydantic import BaseModel, EmailStr, model_serializer, field_serializer, computed_field
 from datetime import datetime
-from typing import Optional, Annotated, List
+from typing import Optional, Annotated, List, Literal
 from pydantic import EmailStr, field_validator, StringConstraints
 from fastapi import UploadFile, HTTPException, status
 
@@ -45,9 +45,16 @@ class userCreate(BaseModel):
     weight: Optional[str] = None
     age: Optional[str] = None
 
+    @computed_field
+    @property
+    def full_name(self) -> str:
+        return f"{self.first_name} {self.last_name}"
+
 class userReturn(BaseModel):
+    id: str
     first_name: Optional[str]
     last_name: Optional[str]
+    full_name: Optional[str]
     email: EmailStr
     phone_number: int
     school: Optional[str] = None
@@ -67,16 +74,13 @@ class userReturn(BaseModel):
                 data.pop(role, None)
         return data
     
-class userUpdate(userCreate):
-    pass
-
-class userUpdateHeader(BaseModel):
-    first_name: Optional[str] 
-    last_name: Optional[str]
-    middle_name: Optional[str]
-    headline: Optional[str]
-    phone_number: Optional[str]
-    email: Optional[EmailStr]
+class userUpdate(BaseModel):
+    profile_picture: Optional[str]
+    height: Optional[str]
+    weight: Optional[str]
+    school: Optional[str]
+    position: Optional[str]
+    bio: Optional[str]
 
 class userBuild(BaseModel):
     height: Optional[str]
@@ -84,6 +88,7 @@ class userBuild(BaseModel):
     age: Optional[str]
     school: Optional[str]
     user_type: Optional[str]
+    profile_picture: Optional[str]
 
 class verificationRequest(BaseModel):
     email: EmailStr
@@ -95,7 +100,8 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     email: Optional[EmailStr] = None
-    first_time_login: Optional[bool] = None
+    full_name: Optional[str] = None
+    id: Optional[str] = None
 
 
 class VerificationTokenData(BaseModel):
@@ -180,3 +186,18 @@ class highlight_return(BaseModel):
 
 class user_query(BaseModel):
     content: Optional[str]
+
+class pending_connection(BaseModel):
+    following_id: str
+    follower_id: str
+
+class Message(BaseModel):
+    sender_id: str
+    receiver_id: str
+    content: str
+
+class notification(BaseModel):
+    recipient_id: str
+    type: Literal["message", "connection_request"]
+    content: Optional[str] = None
+    sender: str

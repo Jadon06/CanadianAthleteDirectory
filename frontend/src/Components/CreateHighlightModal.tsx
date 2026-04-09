@@ -29,9 +29,9 @@ export default function CreateHighlightModal({ show, onHide }: CreateHighlightPr
         console.log(data)
     }
 
-    const handleClickFinish = () => {
+    const handleClickFinish = async () => {
+        await createHighlight();
         onHide();
-        createHighlight();
     }
 
     const handleChange = (key: keyof Highlight, value: string) => {

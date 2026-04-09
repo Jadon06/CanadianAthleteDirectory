@@ -1,6 +1,6 @@
 from fastapi import APIRouter, WebSocket, Depends
 from .websocket_manager import manager
-from ...oauth2 import get_current_user
+from .messaging_auth import get_current_user
 
 router = APIRouter(
     prefix="/messaging",

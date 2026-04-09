@@ -1,5 +1,5 @@
 import { Container } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
 import "../App.css"
@@ -10,10 +10,14 @@ import HighlightsBody from '../Components/HighlightsBody.tsx';
 import type { Highlight } from '../Components/HighlightsBody.tsx';
 import type { OverallStatData } from '../Components/AnalyticsHeader.tsx';
 import CreateHighlightModal from '../Components/CreateHighlightModal.tsx';
+import EditProfileModal, { type EditProfileFormData } from '../Components/EditProfileModal.tsx';
+import { buildDashboardPath, navigateToOwnDashboard, usernameFromFullName } from '../utils/dashboardRoute';
 
 export default function profile(){
     const [isContactInfoVisible, setIsContactInfoVisible] = useState(false)
     const [isCreateHighlightModalVisible, setCreateHighlightModalVisible] = useState(false)
+    const [isEditProfileModalVisible, setEditProfileModalVisible] = useState(false)
+    const [editedProfileData, setEditedProfileData] = useState<EditProfileFormData | null>(null)
 
     const [overallData, setOverallData] = useState<OverallStatData>({
         first_name: "",
@@ -46,20 +50,37 @@ export default function profile(){
     })
     const [userData, setUserData] = useState<{
         first_name: string;
-        middle_name: string;
+        full_name: string;
         last_name: string;
         headline: string;
         phone_number: string;
         email: string;
-        postiton: string;
+        position: string;
         height: string;
         weight: string;
         age: string;
         school: string;
+        profile_picture: string;
+        user_type: string;
+        bio: string;
     } | null>(null);
     const [highlights, setHighlights] = useState<Highlight[]>([])
 
+    const profileModalInitialData: EditProfileFormData = {
+        profile_picture: editedProfileData?.profile_picture ?? userData?.profile_picture ?? "",
+        height: editedProfileData?.height ?? userData?.height ?? "",
+        weight: editedProfileData?.weight ?? userData?.weight ?? "",
+        school: editedProfileData?.school ?? userData?.school ?? "",
+        position: editedProfileData?.position ?? overallData.position ?? "",
+        bio: editedProfileData?.bio ?? userData?.headline ?? ""
+    }
+
     const navigate = useNavigate()
+    const location = useLocation()
+    const { username } = useParams<{ username: string }>()
+    const viewedProfileEmailFromState = (location.state as { profileEmail?: string } | null)?.profileEmail
+    const ownUsername = usernameFromFullName(userData?.full_name || `${userData?.first_name || ''} ${userData?.last_name || ''}`.trim())
+    const canEditProfile = (!username || username === ownUsername) && (!viewedProfileEmailFromState || viewedProfileEmailFromState === userData?.email)
 
     const fetchUser = async() => {
         const response = await fetch('http://localhost:8001/users/me/', {
@@ -121,10 +142,16 @@ export default function profile(){
         navigate("/notifications")
     }
 
-    const handleClickDashboard = () => navigate("/dashboard")
+    const handleClickDashboard = () => {
+        void navigateToOwnDashboard(navigate)
+    }
 
     const handleClickAnalytics = () => {
         navigate("/analytics")
+    }
+
+    const handleClickConnections = () => {
+        navigate("/connections")
     }
 
     const handleClickSearch = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -146,11 +173,54 @@ export default function profile(){
         setCreateHighlightModalVisible(true)
     }
 
-    const handleHideModal = () => {
+    const handleShowEditProfileModal = () => {
+        setEditProfileModalVisible(true)
+    }
+
+    const handleSaveEditedProfile = (data: EditProfileFormData) => {
+        // The edited profile form values are stored here for UI preview and API wiring.
+        setEditedProfileData(data)
+
+        setOverallData((prev) => ({
+            ...prev,
+            position: data.position || prev.position
+        }))
+
+        setUserData((prev) => {
+            if (!prev) {
+                return prev
+            }
+
+            return {
+                ...prev,
+                headline: data.bio,
+                profile_picture: data.profile_picture,
+                height: data.height,
+                weight: data.weight,
+                school: data.school
+            }
+        })
+    }
+
+    const handleHideContactModal = () => {
         setIsContactInfoVisible(false)
+    }
+
+    const handleHideHighlightModal = () => {
         setCreateHighlightModalVisible(false)
         fetchUser();
+        fetchHighlights();
     }
+
+    const handleHideEditProfileModal = () => {
+        setEditProfileModalVisible(false)
+    }
+
+    useEffect(() => {
+        if (username && ownUsername && username === 'me') {
+            navigate(buildDashboardPath(ownUsername), { replace: true })
+        }
+    }, [navigate, ownUsername, username])
 
     return (
         <div className="app-shell hero-shell">
@@ -167,9 +237,7 @@ export default function profile(){
                 <div className="section-heading">
                     <div>
                         <div className="eyebrow" style={{ marginBottom: "10px" }}>Profile</div>
-                        <h1 className="section-title">A polished home base for your athletic identity.</h1>
                     </div>
-                    <p className="section-subtitle">Your profile, highlights, and stats now live inside a more premium layout.</p>
                 </div>
             </Container>
 
@@ -177,24 +245,36 @@ export default function profile(){
                 Contact={handleShowContactModal}
                 Connect={() => {}}
                 Analytics={handleClickAnalytics}
+                Connections={handleClickConnections}
+                CanEditProfile={canEditProfile}
+                EditProfile={handleShowEditProfileModal}
                 CreateHighlight={handleShowHighlightsModal}
-                ProfilePic={""}
+                ProfilePic={profileModalInitialData.profile_picture || ""}
+                UserType={userData?.user_type || "other"}
+                Bio={userData?.bio || ""}
                 Age={userData?.age + " "}
                 Name={userData?.first_name + " " + userData?.last_name}
-                Position={"Position: " + overallData.position + " "}
-                Height={userData?.height + "cm"}
-                Weight={userData?.weight + "lbs"}
-                School={userData?.school + ""}
+                Position={"Position: " + userData?.position + " "}
+                Height={profileModalInitialData.height ? profileModalInitialData.height + "cm" : ""}
+                Weight={profileModalInitialData.weight ? profileModalInitialData.weight + "lbs" : ""}
+                School={profileModalInitialData.school + ""}
 
             />
             <ContactInfo
                 show={isContactInfoVisible}
-                onHide={handleHideModal}
+                onHide={handleHideContactModal}
             />
 
             <CreateHighlightModal
                 show={isCreateHighlightModalVisible}
-                onHide={handleHideModal}
+                onHide={handleHideHighlightModal}
+            />
+
+            <EditProfileModal
+                show={isEditProfileModalVisible}
+                onHide={handleHideEditProfileModal}
+                initialData={profileModalInitialData}
+                onSave={handleSaveEditedProfile}
             />
 
             <HighlightsBody 

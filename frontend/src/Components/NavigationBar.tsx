@@ -9,6 +9,7 @@ import { MdNotificationsNone, MdOutlineHome } from "react-icons/md";
 import Autocomplete from '@mui/material/Autocomplete';
 import { TextField } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 interface CustomNavBarProps {
     handleClickHome : () => void;
@@ -38,11 +39,25 @@ interface userData {
 function CustomNavBar({handleClickHome, handleClickSearch, handleClickNotifications, handleClickMsgs, handleChangeSearch, handleClickDashboard} : CustomNavBarProps) {
   const [options, setOptions] = useState<userData[]>([])
   const [inputValue, setInputValue] = useState("")
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  const handleBrandClick = () => {
+    if (location.pathname === '/') {
+      navigate('/sign-up')
+      return
+    }
+    navigate('/')
+  }
 
   const fetchResults = async() => {
     const response = await fetch("http://localhost:8001/search/", {
       method: "POST",
-      credentials: "include"
+      credentials: "include",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ content: inputValue })
     })
     if (!response.ok) {
       const data = await response.json()
@@ -61,7 +76,7 @@ function CustomNavBar({handleClickHome, handleClickSearch, handleClickNotificati
   return (
     <Navbar className="topbar" sticky='top'>
       <Container fluid className="topbar-inner d-flex align-items-center justify-content-between gap-3 py-2 flex-wrap">
-        <div className="brand-mark" onClick={handleClickHome} style={{ cursor: "pointer" }}>
+        <div className="brand-mark" onClick={handleBrandClick} style={{ cursor: "pointer" }}>
           <img src="Logo.png" alt="Canadian Athlete Directory" />
           <span>Canadian Athlete Directory</span>
         </div>

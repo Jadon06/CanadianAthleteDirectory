@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button, Card, Container } from 'react-bootstrap';
-import { FaSearch, FaUserCircle } from 'react-icons/fa';
+import { FaBasketballBall, FaSearch, FaUserCircle } from 'react-icons/fa';
 
 import CustomNavBar from '../Components/NavigationBar';
+import { buildDashboardPath, navigateToOwnDashboard, usernameFromFullName } from '../utils/dashboardRoute';
 
 interface SearchUser {
   first_name: string;
@@ -45,7 +46,11 @@ export default function SearchResults() {
 
       const response = await fetch('http://localhost:8001/search/', {
         method: 'POST',
-        credentials: 'include'
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ content: query })
       });
 
       if (!response.ok) {
@@ -60,7 +65,7 @@ export default function SearchResults() {
     };
 
     fetchUsers();
-  }, []);
+  }, [query]);
 
   const normalizedQuery = query.toLowerCase();
 
@@ -90,7 +95,9 @@ export default function SearchResults() {
   const handleClickHome = () => navigate('/feed');
   const handleClickMessages = () => navigate('/messages');
   const handleClickNotifications = () => navigate('/notifications');
-  const handleClickDashboard = () => navigate('/dashboard');
+  const handleClickDashboard = () => {
+    void navigateToOwnDashboard(navigate);
+  };
 
   const handleClickSearch = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
@@ -129,7 +136,23 @@ export default function SearchResults() {
         </div>
 
         {isLoading && (
-          <Card className="surface-card" style={{ borderRadius: '24px', padding: '20px' }}>
+          <Card className="surface-card" style={{ borderRadius: '24px', padding: '28px', textAlign: 'center' }}>
+            <div className="basketball-loader" aria-hidden="true">
+              <div className="basketball-loader-track">
+                <div className="basketball-loader-orbit">
+                  <span className="basketball-loader-tail" />
+                  <span className="basketball-loader-contrail contrail-1" />
+                  <span className="basketball-loader-contrail contrail-2" />
+                  <span className="basketball-loader-contrail contrail-3" />
+                  <span className="basketball-loader-contrail contrail-4" />
+                  <span className="basketball-loader-contrail contrail-5" />
+                  <span className="basketball-loader-contrail contrail-6" />
+                  <span className="basketball-loader-ball">
+                    <FaBasketballBall />
+                  </span>
+                </div>
+              </div>
+            </div>
             <div className="muted-copy">Loading results...</div>
           </Card>
         )}
@@ -151,7 +174,12 @@ export default function SearchResults() {
             )}
 
             {filteredUsers.map((user, index) => (
-              <Card key={`${user.email}-${index}`} className="search-result-card">
+              <Card
+                key={`${user.email}-${index}`}
+                className="search-result-card"
+                onClick={() => navigate(buildDashboardPath(usernameFromFullName(`${user.first_name} ${user.last_name}`)), { state: { profileEmail: user.email } })}
+                style={{ cursor: 'pointer' }}
+              >
                 <div className="search-result-top">
                   <div className="search-result-avatar">
                     {user.profile_picture ? (

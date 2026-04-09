@@ -19,6 +19,7 @@ from .databases.PostgresDB import Base
 class users(Document):
     first_name: Optional[str] = None
     last_name: Optional[str] = None
+    full_name: Optional[str] = None
     middle_name: Optional[str] = None
     email: EmailStr
     password: str
@@ -30,6 +31,7 @@ class users(Document):
     weight: Optional[str] = None
     age: Optional[str] = None
     user_type: Optional[str] = None
+    bio: Optional[str] = None
 
     class Settings:
         name = "Users"
@@ -37,6 +39,7 @@ class users(Document):
 class pending_users(HashModel, index=True):
     first_name: Optional[str] = None
     last_name: Optional[str] = None
+    full_name: Optional[str] = None
     middle_name: Optional[str] = None
     email: str = Field(primary_key=True)
     password: str
@@ -44,6 +47,24 @@ class pending_users(HashModel, index=True):
     highlights: Optional[schemas.highlight] = None
     upcoming_events: Optional[schemas.upcoming_event] = None
     position: Optional[str] = None
+
+    class Meta:
+        database = redis_sync
+
+class pending_connections(HashModel, index=True):
+    following_id: str
+    follower_id: str
+
+    class Meta:
+        database = redis_sync
+
+class notifications(HashModel, index=True):
+    id: str
+    type: str
+    title: str
+    message: str
+    timestamp: str
+    read: bool = False
 
     class Meta:
         database = redis_sync
@@ -143,3 +164,9 @@ class game_stats(Base):
     fg = Column(String, nullable=True)
     ft = Column(String, nullable=True)
     threept = Column(String, nullable=True)
+
+class connections(Base):
+    __tablename__ = "connections"
+
+    following_id = Column(String, nullable=False, primary_key=True)
+    follower_id = Column(String, nullable=False)

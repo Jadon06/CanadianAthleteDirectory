@@ -3,6 +3,7 @@ import { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import { Link, useNavigate } from 'react-router-dom';
 import Alert from 'react-bootstrap/Alert';
+import { navigateToOwnDashboard } from '../utils/dashboardRoute';
 
 interface credentials {
     username: string;
@@ -41,7 +42,7 @@ export default function Login() {
             return;
         }
         const data = await response.json()
-        navigate("/dashboard")
+        await navigateToOwnDashboard(navigate)
         return console.log(data)
     }
 

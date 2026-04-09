@@ -140,7 +140,7 @@ export default function Home() {
                                     <h3 style={{ marginBottom: "6px" }}>Stay visible without losing the locker-room feel</h3>
                                     <div className="network-meta">Fast, social, and built around sport-specific identity.</div>
                                 </div>
-                                <div className="network-avatar"><FaBasketballBall style={{ fontSize: "48px", color: "#A0522D" }} /></div>
+                                <div className="network-avatar" style={{ background: "transparent" }}><FaBasketballBall style={{ fontSize: "48px", color: "#A0522D" }} /></div>
                             </div>
 
                             <div className="feature-grid" style={{ gridTemplateColumns: "1fr", gap: "12px" }}>

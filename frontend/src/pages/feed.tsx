@@ -3,6 +3,7 @@ import { FaPlay } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import CustomNavBar from '../Components/NavigationBar.tsx';
 import type { ChangeEvent, KeyboardEvent } from 'react';
+import { navigateToOwnDashboard } from '../utils/dashboardRoute';
 
 export default function feed() {
     const navigate = useNavigate();
@@ -19,7 +20,9 @@ export default function feed() {
         navigate("/notifications")
     }
 
-    const handleClickDashboard = () => navigate("/dashboard")
+    const handleClickDashboard = () => {
+        void navigateToOwnDashboard(navigate)
+    }
 
     const handleClickSearch = (event: KeyboardEvent<HTMLInputElement>) => {
         if (event.key == 'Enter') {
@@ -44,13 +47,9 @@ export default function feed() {
 
             <Container className="page-section" style={{ paddingTop: "30px", paddingBottom: "50px" }}>
                 <div className="section-heading">
-                    <div>
-                        <div className="eyebrow" style={{ marginBottom: "12px" }}>
-                            <FaPlay /> Recommended feed
-                        </div>
-                        <h1 className="section-title">A social feed that feels like sport, not noise.</h1>
+                    <div className="eyebrow" style={{ marginBottom: "12px" }}>
+                        <FaPlay /> Recommended feed
                     </div>
-                    <p className="section-subtitle">Recommended clips, athletes, and updates can live in a high-contrast feed with stronger hierarchy.</p>
                 </div>
 
                 <div style={{ display: "grid", gap: "18px" }}>
@@ -58,7 +57,6 @@ export default function feed() {
                         <div className="network-card-top">
                             <div>
                                 <h3>Featured athlete story</h3>
-                                <div className="network-meta">A modern feed card with a strong media preview and action bar.</div>
                             </div>
                             <span className="pill">Live</span>
                         </div>
@@ -71,7 +69,6 @@ export default function feed() {
                             />
                         </div>
                         <Card.Body style={{ padding: 0 }}>
-                            <Card.Text className="muted-copy">Use this card pattern for highlights, posts, and updates from across the network.</Card.Text>
                             <div className='d-flex flex-wrap gap-2'>
                                 <Button className='ghost-button btn'>Comment</Button>
                                 <Button className='ghost-button btn'>Like</Button>

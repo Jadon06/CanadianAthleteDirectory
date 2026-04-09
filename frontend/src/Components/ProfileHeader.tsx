@@ -1,8 +1,13 @@
 import { Button, Card, Container } from 'react-bootstrap';
+import { FiEdit2 } from 'react-icons/fi';
+import { FaBinoculars } from 'react-icons/fa';
+import { GiTShirt, GiWhistle } from 'react-icons/gi';
 
 interface ProfileHeaderProps {
     ProfilePic: string;
+    UserType: string;
     Name: string;
+    Bio: string;
     Age: string;
     Position: string;
     Height: string;
@@ -11,10 +16,13 @@ interface ProfileHeaderProps {
     Contact: () => void;
     Connect: () => void;
     Analytics: () => void;
+    Connections: () => void;
+    CanEditProfile: boolean;
+    EditProfile: () => void;
     CreateHighlight: () => void;
 }
 
-export default function ProfileHeader({ ProfilePic, Name, Age, Position, Height, Weight, School, Contact, Connect, Analytics, CreateHighlight } : ProfileHeaderProps) {
+export default function ProfileHeader({ ProfilePic, UserType, Name, Bio, Age, Position, Height, Weight, School, Contact, Connect, Analytics, Connections, CanEditProfile, EditProfile, CreateHighlight } : ProfileHeaderProps) {
     const schoolIcons: Record<string, string> = {
         "Acadia University": "https://upload.wikimedia.org/wikipedia/en/0/06/Acadia_University_Coat_of_Arms_2017.jpg",
         "Dalhousie University": "DalhousieIcon.jpeg",
@@ -29,6 +37,23 @@ export default function ProfileHeader({ ProfilePic, Name, Age, Position, Height,
     }
     
     const schoolIcon = schoolIcons[School] ?? "nopfp_img.jpg"
+    const normalizedUserType = (UserType || '').toLowerCase()
+    const userTypeLabel = normalizedUserType
+        ? normalizedUserType.charAt(0).toUpperCase() + normalizedUserType.slice(1)
+        : 'User'
+
+    const userTypeIcon = (() => {
+        if (normalizedUserType === 'coach') {
+            return <GiWhistle />
+        }
+        if (normalizedUserType === 'athlete') {
+            return <GiTShirt />
+        }
+        if (normalizedUserType === 'scout') {
+            return <FaBinoculars />
+        }
+        return null
+    })()
 
     return (
         <Container className="profile-hero-grid page-section" style={{ marginTop: "14px" }}>
@@ -37,9 +62,26 @@ export default function ProfileHeader({ ProfilePic, Name, Age, Position, Height,
                 <div className="profile-avatar-figure">
                     <img src={ProfilePic || "nopfp_img.jpg"} alt={Name || "Athlete profile"} />
                 </div>
+                {userTypeIcon && (
+                    <div className="profile-user-type-badge" aria-label={`${normalizedUserType} icon`} title={userTypeLabel}>
+                        {userTypeIcon}
+                    </div>
+                )}
             </Card>
 
-            <Card className="profile-meta-card">
+            <Card className="profile-meta-card profile-meta-card-editable">
+                {CanEditProfile && (
+                    <button
+                        type="button"
+                        className="profile-edit-icon-button"
+                        onClick={EditProfile}
+                        aria-label="Edit profile"
+                        title="Edit profile"
+                    >
+                        <FiEdit2 />
+                    </button>
+                )}
+
                 <div className="section-heading" style={{ marginBottom: "10px" }}>
                     <div>
                         <div className="eyebrow" style={{ marginBottom: "8px" }}>Recruiting-ready</div>
@@ -51,9 +93,10 @@ export default function ProfileHeader({ ProfilePic, Name, Age, Position, Height,
                     </div>
                 </div>
 
-                <p className="hero-copy" style={{ marginBottom: "12px" }}>
-                    A modern athlete profile should read like a portfolio: clear identity, strong stats, and fast actions for people who want to connect.
-                </p>
+                <div className="profile-bio-slot" aria-label="Bio placeholder">
+                    <div className="profile-bio-title">Bio</div>
+                    <div className="muted-copy">{Bio || "Add a short athlete bio."}</div>
+                </div>
 
                 <div className="stats-grid" style={{ gridTemplateColumns: "repeat(3, minmax(0, 1fr))" }}>
                     <div className="stat-card"><div className="stat-value">{Height || "0ft"}</div><div className="stat-label">Height</div></div>
@@ -66,10 +109,15 @@ export default function ProfileHeader({ ProfilePic, Name, Age, Position, Height,
                 </div>
 
                 <div className="profile-action-row" style={{ marginTop: "12px" }}>
-                    <Button className="ghost-button btn" onClick={Connect}>Connect</Button>
+                    {!CanEditProfile && (
+                        <Button className="ghost-button btn" onClick={Connect}>Connect</Button>
+                    )}
+                    <Button className="ghost-button btn" onClick={Connections}>Connections</Button>
                     <Button className="ghost-button btn" onClick={Contact}>Contact</Button>
                     <Button className="ghost-button btn" onClick={Analytics}>Analytics</Button>
-                    <Button className="action-button btn" onClick={CreateHighlight}>+ Add Highlight</Button>
+                    {CanEditProfile && (
+                        <Button className="action-button btn" onClick={CreateHighlight}>+ Add Highlight</Button>
+                    )}
                 </div>
             </Card>
         </Container>

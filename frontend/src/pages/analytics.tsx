@@ -6,6 +6,7 @@ import AnalyticsBody from '../Components/AnalyticsBody';
 import AnalyticsHeader from '../Components/AnalyticsHeader';
 import CustomNavBar from '../Components/NavigationBar';
 import type { StatData, OverallStatData } from '../Components/AnalyticsHeader';
+import { navigateToOwnDashboard } from '../utils/dashboardRoute';
 
 const defaultData = {
     first_name: "",
@@ -75,7 +76,7 @@ export default function Analytics() {
     }
 
     const handleClickDashboard = () => {
-        navigate("/dashboard")
+        void navigateToOwnDashboard(navigate)
     }
 
     const handleClickSearch = (event: React.KeyboardEvent<HTMLInputElement>) => {

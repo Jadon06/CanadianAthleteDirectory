@@ -15,7 +15,7 @@ async def login(response: Response, user_credentials: OAuth2PasswordRequestForm 
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid email or password!")
     # create a token
     # return the token for login
-    access_token = oauth2.create_acess_token(data={"email" : user.email, "first_name" : user.first_name, "last_name" : user.last_name})
+    access_token = oauth2.create_acess_token(data={"email" : user.email, "full_name" : user.full_name, "id" : user.id})
     auth_helpers.set_cookie(response, access_token)
     return {"log in success"}
 

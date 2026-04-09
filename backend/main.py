@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from .databases.MongoDB import init_db
-from .routers import preferences, users, auth, highlights, stats, search
+from .routers import preferences, users, auth, highlights, stats, search, connections, notifications
 # from .messaging_system import messaging_router
 from . import models
 import asyncio
@@ -70,10 +70,12 @@ async def on_startup():
     await redis_listener()
 
 app.include_router(users.router)
-# app.include_router(messaging_router.router)
+app.include_router(messaging_router.router)
 app.include_router(auth.router)
 app.include_router(highlights.router)
 app.include_router(messaging_router.router)
 app.include_router(stats.router)
 app.include_router(preferences.router)
 app.include_router(search.router)
+app.include_router(notifications.router)
+app.include_router(connections.router)

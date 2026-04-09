@@ -20,6 +20,7 @@ async def create_user(user_info: schemas.userCreate):
     exists = await models.users.find_one(models.users.email == user_info.email)
     if exists:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"User with email:{user_info.email} already exists!")
+    
     verification_token = email_verification.verification_token({'email' : user_info.email, "first_time_login" : True})
     pending_user = models.pending_users(**user_info.dict())
     pending_user.password = auth_helpers.hash(pending_user.password)
@@ -29,20 +30,13 @@ async def create_user(user_info: schemas.userCreate):
     return {"status" : "verify email"}
 
 @router.put("/")
-async def update_user_header(updated_user: schemas.userUpdateHeader, current_user: int = Depends(oauth2.get_current_user)):
+async def update_user_header(updated_user: schemas.userUpdate, current_user: int = Depends(oauth2.get_current_user)):
     user = await models.users.find_one(models.users.email == current_user.email)
     data = updated_user.model_dump(exclude_unset=True)
     for field, value in data.items():
         setattr(user, field, value)
     await user.save()
     return user
-
-# @router.get("/{data}", response_model=List[schemas.userReturn])
-# async def get_user(data: str, current_user: int = Depends(oauth2.get_current_user)):
-#     results = await Search_system.recommendations(data.first_name, data.last_name, current_user)
-#     if not results:
-#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="user not found!")
-#     return results
 
 @router.get("/me" )#, response_class=schemas.userReturn)
 async def get_current_user(current_user: int = Depends(oauth2.get_current_user)):
