@@ -42,17 +42,24 @@ export default function Sign_up() {
         setConfirmPassword(event.target.value);
     };
 
-    const CreateUser =  async () => {
-        const response = await fetch(apiUrl('/users/'), {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(newUser)  
-        })
-        if (!response.ok) {
-            const data = await response.json()
-            console.log("api called")
-            setUserExistsError(data.detail)
-            return;
+    const CreateUser =  async (): Promise<boolean> => {
+        try {
+            const response = await fetch(apiUrl('/users/'), {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(newUser)
+            });
+
+            if (!response.ok) {
+                const data = await response.json();
+                setUserExistsError(data.detail || "Could not create user.");
+                return false;
+            }
+
+            return true;
+        } catch {
+            setUserExistsError("Signup request failed. Check API URL and CORS settings.");
+            return false;
         }
     }
 
@@ -97,9 +104,10 @@ export default function Sign_up() {
             console.log("error occurred!")
             return;
         }
-        console.log("redirected")
-        navigate("/verify")
-        CreateUser();
+        const created = await CreateUser();
+        if (created) {
+            navigate("/verify");
+        }
     };
 
     return (
