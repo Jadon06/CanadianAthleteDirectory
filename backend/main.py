@@ -48,7 +48,7 @@ def get_docs():
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await init_db()
-    populate_dbs()
+    # populate_dbs()
     # await Indexing.build_vectorstore()
     yield
 

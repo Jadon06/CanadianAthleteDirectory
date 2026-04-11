@@ -55,16 +55,16 @@ services:
     working_dir: /home/redislocal
     restart: always
 
-  postgres-local:
-    image: postgres:latest
-    container_name: postgres-local
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-    ports:
-      - "5432:5432"
-    volumes:
-      - "./docker/postgres:/home/postgres/data"
-    working_dir: /home/postgreslocal
-    restart: always
+  # postgres-local:
+  #   image: postgres:latest
+  #   container_name: postgres-local
+  #   environment:
+  #     POSTGRES_USER: ${POSTGRES_USER}
+  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  #     POSTGRES_DB: ${POSTGRES_DB}
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - "./docker/postgres:/home/postgres/data"
+  #   working_dir: /home/postgreslocal
+  #   restart: always
