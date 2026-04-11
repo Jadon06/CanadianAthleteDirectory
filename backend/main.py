@@ -64,9 +64,11 @@ allowed_origins = [
     for origin in os.getenv('FRONTEND_ORIGINS', 'http://localhost:5173').split(',')
     if origin.strip()
 ]
+allow_origin_regex = os.getenv('FRONTEND_ORIGIN_REGEX', r'https://.*\.vercel\.app').strip() or None
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://canadian-athlete-directory-r6x6.vercel.app"],
+    allow_origins=allowed_origins,
+    allow_origin_regex=allow_origin_regex,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"]

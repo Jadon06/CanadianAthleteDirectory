@@ -38,6 +38,7 @@ def send_verification_email(recipient: EmailStr, access_token: str):
         return
 
     verification_link = f"{FRONTEND_BASE_URL}/verifyandcreate/{access_token}"
+    print(verification_link)
     try:
         response = resend.Emails.send({
             "from": RESEND_FROM_EMAIL,

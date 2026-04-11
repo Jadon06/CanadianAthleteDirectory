@@ -27,7 +27,7 @@ export default function Login() {
     const navigate = useNavigate()
 
     const login_user = async() => {
-        const response = await fetch(apiUrl('/login/'),
+        const response = await fetch(apiUrl('/login'),
             {method: 'POST',
             headers: {'Content-Type': "application/x-www-form-urlencoded"},
             credentials: "include",

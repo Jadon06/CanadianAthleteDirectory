@@ -6,6 +6,7 @@ from ..utils import auth_helpers, email_verification
 router = APIRouter(tags=["Authentication"])
 
 @router.post("/login") #,response_model=schemas.Token)
+@router.post("/login/") #,response_model=schemas.Token)
 async def login(response: Response, user_credentials: OAuth2PasswordRequestForm = Depends()):
     print(user_credentials)
     user = await models.users.find_one(models.users.email == user_credentials.username)
