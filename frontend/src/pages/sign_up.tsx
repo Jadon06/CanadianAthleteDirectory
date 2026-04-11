@@ -29,7 +29,7 @@ export default function Sign_up() {
     const [phoneNumberError, setphoneNumberError] = useState("");
     const [passwordError, setPasswordError] = useState("");
     const [passwordAlert, setPasswordAlert] = useState(false);
-    const [userExistsError, setUserExistsError] = useState(false)
+    const [userExistsError, setUserExistsError] = useState("")
 
     const handleChange = (key: keyof new_user, value: string) => {
         setNewUser(prev => ({
