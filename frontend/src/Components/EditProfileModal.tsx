@@ -36,7 +36,7 @@ export default function EditProfileModal({ show, onHide, initialData, onSave }: 
 	};
 
 	const updateData = async(data: EditProfileFormData) => {
-		const response = await fetch(apiUrl('/users/'), {
+		await fetch(apiUrl('/users/'), {
 			method: "PUT",
 			credentials: "include",
 			headers: {
