@@ -39,7 +39,7 @@ def send_verification_email(recipient: EmailStr, access_token: str):
 
     verification_link = f"{FRONTEND_BASE_URL}/verifyandcreate/{access_token}"
     try:
-        resend.Emails.send({
+        response = resend.Emails.send({
             "from": RESEND_FROM_EMAIL,
             "to": [str(recipient)],
             "subject": "Verification Link",
@@ -48,6 +48,12 @@ def send_verification_email(recipient: EmailStr, access_token: str):
                 f"<p><a href=\"{verification_link}\">Verify your account</a></p>"
             ),
         })
-        print(f"Verification email sent to {recipient}")
+        message_id = None
+        if isinstance(response, dict):
+            message_id = response.get("id")
+        if message_id:
+            print(f"Verification email accepted by Resend for {recipient}. id={message_id}")
+        else:
+            print(f"Resend returned unexpected response for {recipient}: {response}")
     except Exception as exc:
         print(f"Email delivery failed for {recipient}: {exc}")
