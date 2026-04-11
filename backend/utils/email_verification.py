@@ -14,6 +14,7 @@ EMAIL = os.getenv("EMAIL")
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")
 EMAIL_ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("EMAIL_ACCESS_TOKEN_EXPIRE_MINUTES"))
+FRONTEND_BASE_URL = os.getenv("FRONTEND_BASE_URL", "http://localhost:5173").rstrip("/")
 
 context = ssl.create_default_context()
 
@@ -38,9 +39,11 @@ def send_verification_email(recipient: EmailStr, access_token: str):
     em['From'] = EMAIL
     em['To'] = recipient
     em['Subject'] = 'verification link'
-    em.set_content(f"your verification link expires in 30 minutes\n http://localhost:5173/verifyandcreate/{access_token}")
+    em.set_content(
+        f"your verification link expires in 30 minutes\n "
+        f"{FRONTEND_BASE_URL}/verifyandcreate/{access_token}"
+    )
 
     with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
-        print(APP_PASSWORD)
         smtp.login(EMAIL, APP_PASSWORD)
         smtp.sendmail(EMAIL, recipient, em.as_string())
