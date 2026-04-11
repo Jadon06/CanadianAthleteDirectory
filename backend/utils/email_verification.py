@@ -1,22 +1,20 @@
-import smtplib, ssl
 import os
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
 from pydantic import EmailStr
-from email.message import EmailMessage
 from jose import jwt
 from .. import schemas
+import resend
 
 load_dotenv()
 
-APP_PASSWORD = os.getenv("APP_PASSWORD")
-EMAIL = os.getenv("EMAIL")
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")
 EMAIL_ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("EMAIL_ACCESS_TOKEN_EXPIRE_MINUTES"))
 FRONTEND_BASE_URL = os.getenv("FRONTEND_BASE_URL", "http://localhost:5173").rstrip("/")
-
-context = ssl.create_default_context()
+RESEND_API_KEY = os.getenv("RESEND_API_KEY")
+RESEND_FROM_EMAIL = os.getenv("RESEND_FROM_EMAIL", "noreply@canadianathletenetwork.app")
+resend.api_key = RESEND_API_KEY
 
 def verification_token(payload: dict):
     expire = datetime.utcnow() + timedelta(minutes=EMAIL_ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -35,19 +33,21 @@ def verify_token(token: str, credentials_exception):
     return token_data
 
 def send_verification_email(recipient: EmailStr, access_token: str):
-    em = EmailMessage()
-    em['From'] = EMAIL
-    em['To'] = recipient
-    em['Subject'] = 'verification link'
-    em.set_content(
-        f"your verification link expires in 30 minutes\n "
-        f"{FRONTEND_BASE_URL}/verifyandcreate/{access_token}"
-    )
+    if not RESEND_API_KEY:
+        print("Email delivery failed: RESEND_API_KEY is not set")
+        return
 
+    verification_link = f"{FRONTEND_BASE_URL}/verifyandcreate/{access_token}"
     try:
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context, timeout=10) as smtp:
-            smtp.login(EMAIL, APP_PASSWORD)
-            smtp.sendmail(EMAIL, recipient, em.as_string())
-    except (smtplib.SMTPException, OSError) as exc:
-        # Avoid failing signup requests when SMTP is temporarily unavailable.
+        resend.Emails.send({
+            "from": RESEND_FROM_EMAIL,
+            "to": [str(recipient)],
+            "subject": "Verification Link",
+            "html": (
+                "<p>Your verification link expires in 30 minutes.</p>"
+                f"<p><a href=\"{verification_link}\">Verify your account</a></p>"
+            ),
+        })
+        print(f"Verification email sent to {recipient}")
+    except Exception as exc:
         print(f"Email delivery failed for {recipient}: {exc}")
