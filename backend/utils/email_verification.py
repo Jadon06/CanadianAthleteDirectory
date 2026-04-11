@@ -44,6 +44,10 @@ def send_verification_email(recipient: EmailStr, access_token: str):
         f"{FRONTEND_BASE_URL}/verifyandcreate/{access_token}"
     )
 
-    with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
-        smtp.login(EMAIL, APP_PASSWORD)
-        smtp.sendmail(EMAIL, recipient, em.as_string())
+    try:
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context, timeout=10) as smtp:
+            smtp.login(EMAIL, APP_PASSWORD)
+            smtp.sendmail(EMAIL, recipient, em.as_string())
+    except (smtplib.SMTPException, OSError) as exc:
+        # Avoid failing signup requests when SMTP is temporarily unavailable.
+        print(f"Email delivery failed for {recipient}: {exc}")
