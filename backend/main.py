@@ -15,6 +15,7 @@ from .databases.PostgresDB import get_db, engine, SessionLocal
 from sqlalchemy.orm import Session
 
 from .Search_System import Indexing
+import os
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -48,7 +49,7 @@ def get_docs():
 async def lifespan(app: FastAPI):
     await init_db()
     populate_dbs()
-    await Indexing.build_vectorstore()
+    # await Indexing.build_vectorstore()
     yield
 
 async def redis_listener():
@@ -58,9 +59,14 @@ async def redis_listener():
     asyncio.create_task(subscribe("general", forward))
 
 app = FastAPI(lifespan=lifespan)
+allowed_origins = [
+    origin.strip()
+    for origin in os.getenv('FRONTEND_ORIGINS', 'http://localhost:5173').split(',')
+    if origin.strip()
+]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"]

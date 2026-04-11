@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Button, Form, InputGroup, Modal } from 'react-bootstrap';
+import { apiUrl } from '../utils/api';
 
 export interface EditProfileFormData {
 	profile_picture: string;
@@ -35,7 +36,7 @@ export default function EditProfileModal({ show, onHide, initialData, onSave }: 
 	};
 
 	const updateData = async(data: EditProfileFormData) => {
-		const response = await fetch("http://localhost:8001/users/", {
+		const response = await fetch(apiUrl('/users/'), {
 			method: "PUT",
 			credentials: "include",
 			headers: {

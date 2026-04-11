@@ -12,6 +12,7 @@ import type { OverallStatData } from '../Components/AnalyticsHeader.tsx';
 import CreateHighlightModal from '../Components/CreateHighlightModal.tsx';
 import EditProfileModal, { type EditProfileFormData } from '../Components/EditProfileModal.tsx';
 import { buildDashboardPath, navigateToOwnDashboard, usernameFromFullName } from '../utils/dashboardRoute';
+import { apiUrl } from '../utils/api';
 
 export default function profile(){
     const [isContactInfoVisible, setIsContactInfoVisible] = useState(false)
@@ -83,7 +84,7 @@ export default function profile(){
     const canEditProfile = (!username || username === ownUsername) && (!viewedProfileEmailFromState || viewedProfileEmailFromState === userData?.email)
 
     const fetchUser = async() => {
-        const response = await fetch('http://localhost:8001/users/me/', {
+        const response = await fetch(apiUrl('/users/me/'), {
             method: "GET",
             credentials: "include"
         })
@@ -95,7 +96,7 @@ export default function profile(){
     }
 
     const fetchHighlights = async() => {
-        const response = await fetch("http://localhost:8001/highlights/", {
+        const response = await fetch(apiUrl('/highlights/'), {
             method: "GET",
             credentials: "include"
         })
@@ -110,7 +111,7 @@ export default function profile(){
     }
 
     const fetchOverallStats = async() => {
-        const response = await fetch("http://localhost:8001/stats/overall_stats/", {
+        const response = await fetch(apiUrl('/stats/overall_stats/'), {
             method: "GET",
             credentials: "include"
         })

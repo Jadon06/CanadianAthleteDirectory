@@ -1,5 +1,6 @@
 import { Modal, Card, Table } from 'react-bootstrap';
 import { useEffect, useState } from 'react'
+import { apiUrl } from '../utils/api';
 
 export interface ViewContactInfoProp {
     show: boolean;
@@ -12,7 +13,7 @@ export default function ContactInfo({ show, onHide } : ViewContactInfoProp) {
 
     
     const fetchContactInfo = async() => {
-        const response = await fetch("http://localhost:8001/users/me/", {
+        const response = await fetch(apiUrl('/users/me/'), {
             method: "GET",
             credentials: "include"
         })

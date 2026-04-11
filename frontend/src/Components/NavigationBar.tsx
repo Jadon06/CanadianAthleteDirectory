@@ -10,6 +10,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { TextField } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { apiUrl } from '../utils/api';
 
 interface CustomNavBarProps {
     handleClickHome : () => void;
@@ -51,7 +52,7 @@ function CustomNavBar({handleClickHome, handleClickSearch, handleClickNotificati
   }
 
   const fetchResults = async() => {
-    const response = await fetch("http://localhost:8001/search/", {
+    const response = await fetch(apiUrl('/search/'), {
       method: "POST",
       credentials: "include",
       headers: {

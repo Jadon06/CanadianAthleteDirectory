@@ -7,6 +7,7 @@ import AnalyticsHeader from '../Components/AnalyticsHeader';
 import CustomNavBar from '../Components/NavigationBar';
 import type { StatData, OverallStatData } from '../Components/AnalyticsHeader';
 import { navigateToOwnDashboard } from '../utils/dashboardRoute';
+import { apiUrl } from '../utils/api';
 
 const defaultData = {
     first_name: "",
@@ -95,7 +96,7 @@ export default function Analytics() {
         arr ? arr.map(v => Number(v) || 0) : [0];
 
     const fetchStats = async() => {
-        const response = await fetch("http://localhost:8001/stats/game_stats/", {
+        const response = await fetch(apiUrl('/stats/game_stats/'), {
             method: "GET",
             credentials: "include"
         })
@@ -129,7 +130,7 @@ export default function Analytics() {
     }
 
     const fetchOverallStats = async() => {
-        const response = await fetch("http://localhost:8001/stats/overall_stats/", {
+        const response = await fetch(apiUrl('/stats/overall_stats/'), {
             method: "GET",
             credentials: "include"
         })

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import { useNavigate, useParams } from 'react-router-dom';
 import Select from 'react-select'
+import { apiUrl } from '../utils/api';
 
 interface Option {
   value: string;
@@ -65,7 +66,7 @@ export default function VerifyCreateAndLogin() {
     };
 
     const create_user = async() => {
-        const response = await fetch(`http://localhost:8001/login/${token}`,{
+        const response = await fetch(apiUrl(`/login/${token}`),{
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json', // Required for JSON data

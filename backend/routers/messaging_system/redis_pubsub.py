@@ -1,7 +1,12 @@
 from redis import asyncio as aioredis
 import asyncio
+import os
 
-redis = aioredis.from_url("redis://localhost:6379", decode_responses=True)
+from dotenv import load_dotenv
+
+load_dotenv()
+
+redis = aioredis.from_url(os.getenv("REDIS_URL", "redis://localhost:6379"), decode_responses=True)
 
 async def publish(room: str, message: str):
     await redis.publish(room, message)

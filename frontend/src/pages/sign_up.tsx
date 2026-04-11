@@ -3,6 +3,7 @@ import { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import { Link, useNavigate } from 'react-router-dom';
 import Alert from 'react-bootstrap/Alert';
+import { apiUrl } from '../utils/api';
 
 interface new_user {
     first_name: string;
@@ -42,7 +43,7 @@ export default function Sign_up() {
     };
 
     const CreateUser =  async () => {
-        const response = await fetch('http://localhost:8001/users/', {
+        const response = await fetch(apiUrl('/users/'), {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(newUser)  

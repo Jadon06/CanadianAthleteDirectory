@@ -1,5 +1,6 @@
 import { Modal, Form, Button, InputGroup } from 'react-bootstrap';
 import { useEffect, useState } from 'react'
+import { apiUrl } from '../utils/api';
 
 export interface User {
     first_name: string;
@@ -36,7 +37,7 @@ function EditHeaderProfile({ show, onHide, initialUser}: EditHeaderProfileProps)
     };
     
     const fetchUser = async() => {
-        const response = await fetch('http://localhost:8001/users/me/', {
+        const response = await fetch(apiUrl('/users/me/'), {
             method: "GET",
             credentials: "include"
         })
@@ -52,7 +53,7 @@ function EditHeaderProfile({ show, onHide, initialUser}: EditHeaderProfileProps)
 
     const updateInformation = async() => {
         console.log("About to send:", updatedData);
-        const response = await fetch('http://localhost:8001/users/', {
+        const response = await fetch(apiUrl('/users/'), {
             method: 'PUT',
             credentials: "include",
             headers: {'Content-Type': 'application/json'},

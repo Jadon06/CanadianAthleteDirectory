@@ -5,6 +5,7 @@ import { FaBasketballBall, FaSearch, FaUserCircle } from 'react-icons/fa';
 
 import CustomNavBar from '../Components/NavigationBar';
 import { buildDashboardPath, navigateToOwnDashboard, usernameFromFullName } from '../utils/dashboardRoute';
+import { apiUrl } from '../utils/api';
 
 interface SearchUser {
   first_name: string;
@@ -44,7 +45,7 @@ export default function SearchResults() {
       setIsLoading(true);
       setErrorMessage('');
 
-      const response = await fetch('http://localhost:8001/search/', {
+      const response = await fetch(apiUrl('/search/'), {
         method: 'POST',
         credentials: 'include',
         headers: {

@@ -1,6 +1,7 @@
 import { Modal, Form, Button, InputGroup } from 'react-bootstrap';
 import { useState } from 'react'
 import type { Highlight } from './HighlightsBody';
+import { apiUrl } from '../utils/api';
 
 export interface CreateHighlightProps {
     show: boolean;
@@ -17,7 +18,7 @@ export default function CreateHighlightModal({ show, onHide }: CreateHighlightPr
         })
     
     const createHighlight = async() => {
-        const response = await fetch("http://localhost:8001/highlights/", {
+        const response = await fetch(apiUrl('/highlights/'), {
             method: "POST",
             credentials: "include",
             headers: {

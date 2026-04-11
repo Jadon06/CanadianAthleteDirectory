@@ -86,13 +86,6 @@ export default function Notifications(){
         }, 300);
     };
 
-    const getNotifications = async() => {
-        const response = await fetch("http://localhost:8001/notifications", {
-            method: "GET",
-            credentials: "include"
-        })
-    }
-
     return (
         <div className="app-shell hero-shell">
             <CustomNavBar

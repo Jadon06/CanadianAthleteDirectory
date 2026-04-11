@@ -1,4 +1,5 @@
 import type { NavigateFunction } from 'react-router-dom';
+import { apiUrl } from './api';
 
 export const usernameFromFullName = (fullName?: string): string => {
   if (!fullName) {
@@ -15,7 +16,7 @@ export const buildDashboardPath = (username: string): string => {
 
 export const resolveCurrentDashboardUsername = async (): Promise<string> => {
   try {
-    const response = await fetch('http://localhost:8001/users/me/', {
+    const response = await fetch(apiUrl('/users/me/'), {
       method: 'GET',
       credentials: 'include'
     });

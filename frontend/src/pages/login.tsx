@@ -4,6 +4,7 @@ import Form from 'react-bootstrap/Form';
 import { Link, useNavigate } from 'react-router-dom';
 import Alert from 'react-bootstrap/Alert';
 import { navigateToOwnDashboard } from '../utils/dashboardRoute';
+import { apiUrl } from '../utils/api';
 
 interface credentials {
     username: string;
@@ -26,7 +27,7 @@ export default function Login() {
     const navigate = useNavigate()
 
     const login_user = async() => {
-        const response = await fetch('http://localhost:8001/login/',
+        const response = await fetch(apiUrl('/login/'),
             {method: 'POST',
             headers: {'Content-Type': "application/x-www-form-urlencoded"},
             credentials: "include",

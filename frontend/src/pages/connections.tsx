@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import type { ChangeEvent, KeyboardEvent } from 'react';
 import CustomNavBar from '../Components/NavigationBar';
 import { navigateToOwnDashboard } from '../utils/dashboardRoute';
+import { apiUrl } from '../utils/api';
 
 interface ConnectionUser {
 	id: string;
@@ -36,7 +37,7 @@ export default function Connections() {
 	useEffect(() => {
 		const fetchConnections = async () => {
 			try {
-				const response = await fetch('http://localhost:8001/search/', {
+				const response = await fetch(apiUrl('/search/'), {
 					method: 'POST',
 					credentials: 'include',
 					headers: {

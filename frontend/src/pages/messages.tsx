@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import type { ChangeEvent, KeyboardEvent } from 'react';
 import CustomNavBar from '../Components/NavigationBar';
 import { navigateToOwnDashboard } from '../utils/dashboardRoute';
+import { wsUrl } from '../utils/api';
 
 interface ConversationUser {
     first_name: string;
@@ -87,8 +88,7 @@ export default function Messages() {
         }
 
         setSocketStatus('connecting')
-        const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws'
-        const ws = new WebSocket(`${protocol}://localhost:8001/messaging/ws/${roomId}`)
+        const ws = new WebSocket(wsUrl(`/messaging/ws/${roomId}`))
         socketRef.current = ws
 
         ws.onopen = () => {
