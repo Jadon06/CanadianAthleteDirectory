@@ -66,7 +66,7 @@ allowed_origins = [
 ]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins="https://canadian-athlete-directory-r6x6.vercel.app",
+    allow_origins=["https://canadian-athlete-directory-r6x6.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"]
