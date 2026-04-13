@@ -8,17 +8,12 @@ services:
     depends_on:
       redis-local:
         condition: service_healthy
-      postgres:
-        condition: service_healthy
-      mongodb-local:
-        condition: service_started
     environment:
       EMAIL: ${EMAIL}
       PASSWORD: ${APP_PASSWORD}
       REDIS_URL: redis://redis-local:6379
       MONGODB_URL: ${MONGODB_URL}
       POSTGRES_URL: ${POSTGRES_URL}
-      POSTGRES_DOCKER_HOST: postgres
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
@@ -46,20 +41,8 @@ services:
       - /usr/src/frontend/node_modules
     restart: unless-stopped
 
-  mongodb-local:
-    image: mongodb/mongodb-atlas-local
-    container_name: mongodb-local
-    ports:
-      - "27017:27017"
-    environment:
-      ACCEPT_LICENSE: "true"
-    volumes:
-      - "./docker/mongodb:/home/mongodb/data"
-    working_dir: /home/mongodb-local
-    restart: unless-stopped
-
   redis-local:
-    image: redis/redis-stack:latest
+    image: redis/redis-stack-server:latest
     container_name: redis-local
     ports:
       - "6379:6379"
@@ -70,24 +53,5 @@ services:
       interval: 5s
       timeout: 3s
       retries: 20
-      start_period: 5s
-    restart: unless-stopped
-
-  postgres:
-    image: postgres:16
-    container_name: postgres
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-    ports:
-      - "5432:5432"
-    volumes:
-      - "./docker/postgres:/var/lib/postgresql/data"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
-      interval: 5s
-      timeout: 5s
-      retries: 30
       start_period: 5s
     restart: unless-stopped
