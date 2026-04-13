@@ -1,6 +1,8 @@
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
+import logging
+import time
 from .databases.MongoDB import init_db
 from .routers import preferences, users, auth, highlights, stats, search, connections, notifications
 # from .messaging_system import messaging_router
@@ -17,7 +19,27 @@ from sqlalchemy.orm import Session
 from .Search_System import Indexing
 import os
 
-models.Base.metadata.create_all(bind=engine)
+logger = logging.getLogger(__name__)
+
+
+def run_postgres_migrations(max_attempts: int = 20, delay_seconds: float = 1.0) -> bool:
+    """Create/update SQL tables with retry to handle container startup timing."""
+    for attempt in range(1, max_attempts + 1):
+        try:
+            models.Base.metadata.create_all(bind=engine)
+            logger.info("PostgreSQL migrations completed.")
+            return True
+        except Exception as exc:
+            if attempt == max_attempts:
+                logger.warning("PostgreSQL migrations failed after %s attempts: %s", max_attempts, exc)
+                return False
+            logger.warning(
+                "PostgreSQL not ready yet (attempt %s/%s): %s",
+                attempt,
+                max_attempts,
+                exc,
+            )
+            time.sleep(delay_seconds)
 
 def populate_dbs():
     print("started")
@@ -47,6 +69,8 @@ def get_docs():
 # some change
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    await asyncio.to_thread(models.run_redis_migrations)
+    await asyncio.to_thread(run_postgres_migrations)
     await init_db()
     # populate_dbs()
     # await Indexing.build_vectorstore()

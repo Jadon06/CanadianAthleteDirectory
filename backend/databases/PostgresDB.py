@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 import os
 
 from sqlalchemy import create_engine
+from sqlalchemy.engine import make_url
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -9,9 +10,37 @@ from .. import models
 
 load_dotenv()
 
-POSTGRES_URL = os.getenv("POSTGRES_URL")
+def resolve_postgres_url() -> str:
+    postgres_url = os.getenv("POSTGRES_URL")
+    if not postgres_url:
+        raise RuntimeError("POSTGRES_URL is not set")
 
-engine = create_engine(POSTGRES_URL)
+    docker_host = os.getenv("POSTGRES_DOCKER_HOST")
+    parsed = make_url(postgres_url)
+
+    # Correct common typo where localhost is accidentally used as DB username.
+    if parsed.username in {"127.0.0.1", "localhost"}:
+        env_user = os.getenv("POSTGRES_USER")
+        if env_user:
+            parsed = parsed.set(username=env_user)
+
+    if docker_host and parsed.host in {"127.0.0.1", "localhost"}:
+        parsed = parsed.set(host=docker_host)
+
+    env_password = os.getenv("POSTGRES_PASSWORD")
+    if env_password and parsed.password is None:
+        parsed = parsed.set(password=env_password)
+
+    env_db = os.getenv("POSTGRES_DB")
+    if env_db and not parsed.database:
+        parsed = parsed.set(database=env_db)
+
+    return parsed.render_as_string(hide_password=False)
+
+
+POSTGRES_URL = resolve_postgres_url()
+
+engine = create_engine(POSTGRES_URL, pool_pre_ping=True)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 

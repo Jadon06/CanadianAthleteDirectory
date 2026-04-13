@@ -1,21 +1,35 @@
 services:
   api:
-    build: 
+    build:
       context: ./backend
       dockerfile: dockerfile
     ports:
       - "8001:8001"
     depends_on:
-      - mongodb-local
-      - redis-local
+      redis-local:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      mongodb-local:
+        condition: service_started
     environment:
       EMAIL: ${EMAIL}
       PASSWORD: ${APP_PASSWORD}
-      OLLAMA_BASE_URL: http://ollama:11434
+      REDIS_URL: redis://redis-local:6379
+      MONGODB_URL: ${MONGODB_URL}
+      POSTGRES_URL: ${POSTGRES_URL}
+      POSTGRES_DOCKER_HOST: postgres
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://ollama:11434}
+      FRONTEND_ORIGINS: ${FRONTEND_ORIGINS:-http://localhost:5173}
+      FRONTEND_ORIGIN_REGEX: ${FRONTEND_ORIGIN_REGEX:-https://.*\.vercel\.app}
     volumes:
       - ./backend:/usr/src/backend
       - ./.env:/usr/src/backend/.env
-    
+    restart: unless-stopped
+
   ui:
     build:
       context: ./frontend
@@ -23,15 +37,15 @@ services:
     ports:
       - "5173:5173"
     depends_on:
-      - mongodb-local
-      - redis-local
-      - api
-    environment:            
-      - CHOKIDAR_USEPOLLING=true
+      api:
+        condition: service_started
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
     volumes:
       - ./frontend:/usr/src/frontend
       - /usr/src/frontend/node_modules
-  
+    restart: unless-stopped
+
   mongodb-local:
     image: mongodb/mongodb-atlas-local
     container_name: mongodb-local
@@ -39,32 +53,41 @@ services:
       - "27017:27017"
     environment:
       ACCEPT_LICENSE: "true"
-      DATABASE_URL: "mongodb://mongodb-local:27017/users"
     volumes:
       - "./docker/mongodb:/home/mongodb/data"
     working_dir: /home/mongodb-local
-    restart: always
-    
+    restart: unless-stopped
+
   redis-local:
     image: redis/redis-stack:latest
     container_name: redis-local
     ports:
       - "6379:6379"
     volumes:
-      - "./docker/redis:/home/redis/data"
-    working_dir: /home/redislocal
-    restart: always
+      - "./docker/redis:/data"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 5s
+    restart: unless-stopped
 
-  # postgres-local:
-  #   image: postgres:latest
-  #   container_name: postgres-local
-  #   environment:
-  #     POSTGRES_USER: ${POSTGRES_USER}
-  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-  #     POSTGRES_DB: ${POSTGRES_DB}
-  #   ports:
-  #     - "5432:5432"
-  #   volumes:
-  #     - "./docker/postgres:/home/postgres/data"
-  #   working_dir: /home/postgreslocal
-  #   restart: always
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - "./docker/postgres:/var/lib/postgresql/data"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 5s
+    restart: unless-stopped

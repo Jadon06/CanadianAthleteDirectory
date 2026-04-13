@@ -3,6 +3,8 @@ from pydantic import EmailStr, field_validator, StringConstraints, Field
 from typing import Optional, Annotated, List, Dict
 from datetime import datetime, timezone
 from functools import partial
+import time
+import logging
 from redis_om import HashModel, Field, Migrator
 from fastapi import File, UploadFile, HTTPException, status
 
@@ -15,6 +17,8 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql.sqltypes import TIMESTAMP
 from sqlalchemy.sql.expression import text
 from .databases.PostgresDB import Base
+
+logger = logging.getLogger(__name__)
 
 class users(Document):
     first_name: Optional[str] = None
@@ -84,7 +88,24 @@ class stat_selection(HashModel, index=True):
     class Meta:
         database = redis_sync
 
-Migrator().run() # Create/update Redis OM indexes for HashModel definitions (e.g., pending_users).
+def run_redis_migrations(max_attempts: int = 10, delay_seconds: float = 1.0) -> bool:
+    """Create/update Redis OM indexes with retry to handle container startup timing."""
+    for attempt in range(1, max_attempts + 1):
+        try:
+            Migrator().run()
+            logger.info("Redis OM migrations completed.")
+            return True
+        except Exception as exc:
+            if attempt == max_attempts:
+                logger.warning("Redis OM migrations skipped after %s attempts: %s", max_attempts, exc)
+                return False
+            logger.warning(
+                "Redis not ready for Redis OM migration (attempt %s/%s): %s",
+                attempt,
+                max_attempts,
+                exc,
+            )
+            time.sleep(delay_seconds)
 
 class highlights(Base):
     __tablename__ = "highlights"

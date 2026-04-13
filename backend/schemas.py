@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, model_serializer, field_serializer, computed_field
+from pydantic import BaseModel, EmailStr, model_serializer, field_serializer, computed_field, ConfigDict
 from datetime import datetime
 from typing import Optional, Annotated, List, Literal
 from pydantic import EmailStr, field_validator, StringConstraints
@@ -167,8 +167,7 @@ class overall_stat_return(BaseModel):
     Points_per_game: str
     Points_per_40_min: str
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 class highlight_return(BaseModel):
     title: str
@@ -184,11 +183,12 @@ class highlight_return(BaseModel):
             v = f"https://www.youtube.com/embed/{embed_id}"
             return v
 
-    class Config:
-        orm_mode = True
-        json_encoders = {
+    model_config = ConfigDict(
+        from_attributes=True,
+        json_encoders={
             datetime: lambda v: v.strftime("%d/%m/%Y")
-        }
+        },
+    )
 
 class user_query(BaseModel):
     content: Optional[str]
