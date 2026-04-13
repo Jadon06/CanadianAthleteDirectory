@@ -44,7 +44,7 @@ def populate_dbs():
 def get_docs():
     docs = models.users.find_all().to_list()
     return docs
-
+# some change
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await init_db()
