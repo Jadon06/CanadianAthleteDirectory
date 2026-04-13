@@ -10,8 +10,8 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt /usr/src/backend/requirements.txt
-COPY usports_scraper/recent_games.json /usr/src/backend/usports_scraper/recent_games.json
-COPY usports_scraper/recent_players.json /usr/src/backend/usports_scraper/recent_players.json
+# COPY usports_scraper/recent_games.json /usr/src/backend/usports_scraper/recent_games.json
+# COPY usports_scraper/recent_players.json /usr/src/backend/usports_scraper/recent_players.json
 
 RUN pip install --no-cache-dir -r /usr/src/backend/requirements.txt
 
