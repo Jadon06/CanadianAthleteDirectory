@@ -32,7 +32,28 @@ async def create_user(user_info: schemas.userCreate):
 @router.put("/")
 async def update_user_header(updated_user: schemas.userUpdate, current_user: int = Depends(oauth2.get_current_user)):
     user = await models.users.find_one(models.users.email == current_user.email)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
     data = updated_user.model_dump(exclude_unset=True)
+
+    # Frontend header modal still uses `headline`; persist it as `bio`.
+    if "headline" in data and "bio" not in data:
+        data["bio"] = data.pop("headline")
+    else:
+        data.pop("headline", None)
+
+    if "email" in data and data["email"] != user.email:
+        exists = await models.users.find_one(models.users.email == data["email"])
+        if exists:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email already in use")
+
+    first_name = data.get("first_name", user.first_name)
+    last_name = data.get("last_name", user.last_name)
+    if "first_name" in data or "last_name" in data:
+        full_name = " ".join([name for name in [first_name, last_name] if name]).strip()
+        data["full_name"] = full_name or user.full_name
+
     for field, value in data.items():
         setattr(user, field, value)
     await user.save()

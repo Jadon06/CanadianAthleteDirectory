@@ -11,6 +11,10 @@ export interface User {
     email: string;
 }
 
+interface UpdateUserPayload extends User {
+    bio?: string;
+}
+
 export interface EditHeaderProfileProps {
     show: boolean;
     onHide: () => void;
@@ -28,6 +32,7 @@ function EditHeaderProfile({ show, onHide, initialUser}: EditHeaderProfileProps)
     };
     
     const [updatedData, setUpdatedData] = useState<User>(initialUser ?? defaultUser)
+    const [saveError, setSaveError] = useState('')
 
     const handleChange = (key: keyof User, value: string) => {
         setUpdatedData(prev => ({
@@ -48,19 +53,33 @@ function EditHeaderProfile({ show, onHide, initialUser}: EditHeaderProfileProps)
     }
 
     useEffect(() => {
-        fetchUser()
-    }, []);
+        if (show) {
+            void fetchUser()
+            setSaveError('')
+        }
+    }, [show]);
 
     const updateInformation = async() => {
-        console.log("About to send:", updatedData);
+        const payload: UpdateUserPayload = {
+            ...updatedData,
+            bio: updatedData.headline,
+        }
+
         const response = await fetch(apiUrl('/users/'), {
             method: 'PUT',
             credentials: "include",
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(updatedData)
+            body: JSON.stringify(payload)
         })
+
+        if (!response.ok) {
+            const message = await response.text()
+            setSaveError(message || 'Failed to save profile header changes')
+            return
+        }
+
         await response.json()
-        fetchUser();
+        await fetchUser();
         onHide();
     }
     useEffect(() => {
@@ -129,6 +148,7 @@ function EditHeaderProfile({ show, onHide, initialUser}: EditHeaderProfileProps)
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
+                    {saveError && <div className="text-danger me-auto">{saveError}</div>}
                     <Button className="action-button btn" onClick={updateInformation}>Done</Button>
                 </Modal.Footer>
             </Modal>

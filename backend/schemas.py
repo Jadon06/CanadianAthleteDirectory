@@ -75,12 +75,18 @@ class userReturn(BaseModel):
         return data
     
 class userUpdate(BaseModel):
-    profile_picture: Optional[str]
-    height: Optional[str]
-    weight: Optional[str]
-    school: Optional[str]
-    position: Optional[str]
-    bio: Optional[str]
+    first_name: Optional[str] = None
+    middle_name: Optional[str] = None
+    last_name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    phone_number: Optional[str] = None
+    profile_picture: Optional[str] = None
+    height: Optional[str] = None
+    weight: Optional[str] = None
+    school: Optional[str] = None
+    position: Optional[str] = None
+    bio: Optional[str] = None
+    headline: Optional[str] = None
 
 class userBuild(BaseModel):
     height: Optional[str]

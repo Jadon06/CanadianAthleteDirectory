@@ -53,7 +53,6 @@ export default function profile(){
         first_name: string;
         full_name: string;
         last_name: string;
-        headline: string;
         phone_number: string;
         email: string;
         position: string;
@@ -73,7 +72,7 @@ export default function profile(){
         weight: editedProfileData?.weight ?? userData?.weight ?? "",
         school: editedProfileData?.school ?? userData?.school ?? "",
         position: editedProfileData?.position ?? overallData.position ?? "",
-        bio: editedProfileData?.bio ?? userData?.headline ?? ""
+        bio: editedProfileData?.bio ?? userData?.bio ?? ""
     }
 
     const navigate = useNavigate()
@@ -194,13 +193,15 @@ export default function profile(){
 
             return {
                 ...prev,
-                headline: data.bio,
+                bio: data.bio,
                 profile_picture: data.profile_picture,
                 height: data.height,
                 weight: data.weight,
                 school: data.school
             }
         })
+
+        void fetchUser()
     }
 
     const handleHideContactModal = () => {

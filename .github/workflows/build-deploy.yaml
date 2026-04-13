@@ -1,0 +1,41 @@
+name: CanadianAthleteNetwork CI
+
+on: ["push", "pull_request"]
+
+jobs:
+  Build:
+    environment:
+      name: Production - canadian-athlete-directory
+    env:
+      POSTGRES_USER: ${{POSTGRES_USER}}
+      POSTGRES_PASSWORD: ${{POSTGRES_PASSWORD}}
+      POSTGRES_DB: ${{POSTGRES_DB}}
+      POSTGRES_URL: ${{POSTGRES_URL}}
+      MONGODB_URL: ${{MONGODB_URL}}
+      MONGODB_PW: ${{MONGODB_PW}}
+      ACCESS_TOKEN_EXPIRE_SECONDS: ${{ACCESS_TOKEN_EXPIRE_SECONDS}}
+      EMAIL_ACCESS_TOKEN_EXPIRE_MINUTES: ${{EMAIL_ACCESS_TOKEN_EXPIRE_MINUTES}}
+      TTL: ${{TTL}}
+      ALGORITHM: ${{ALGORITHM}}
+      VITE_BASE_API_URL: ${{VITE_BASE_API_URL}}
+      FRONTEND_BASE_URL: ${{FRONTEND_BASE_URL}}
+      FRONTEND_ORIGINS: ${{FRONTEND_ORIGINS}}
+      EMAIL: ${{EMAIL}}
+      SECRET_KEY: ${{SECRET_KEY}}
+      RESEND_API_KEY: ${{RESEND_API_KEYs}}
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: ${{secrets.DATABASE_PASSWORD}}
+          POSTGRES_DB: ${{secrets.DATABASE_NAME}}_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    runs-on: ubuntu-latest

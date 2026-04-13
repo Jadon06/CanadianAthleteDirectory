@@ -21,10 +21,12 @@ interface EditProfileModalProps {
 export default function EditProfileModal({ show, onHide, initialData, onSave }: EditProfileModalProps) {
 	// User input is stored in `formData` until you wire this to your API call.
 	const [formData, setFormData] = useState<EditProfileFormData>(initialData);
+	const [saveError, setSaveError] = useState('');
 
 	useEffect(() => {
 		if (show) {
 			setFormData(initialData);
+			setSaveError('');
 		}
 	}, [show, initialData]);
 
@@ -35,8 +37,8 @@ export default function EditProfileModal({ show, onHide, initialData, onSave }: 
 		}));
 	};
 
-	const updateData = async(data: EditProfileFormData) => {
-		await fetch(apiUrl('/users/'), {
+	const updateData = async(data: EditProfileFormData): Promise<EditProfileFormData> => {
+		const response = await fetch(apiUrl('/users/'), {
 			method: "PUT",
 			credentials: "include",
 			headers: {
@@ -44,12 +46,31 @@ export default function EditProfileModal({ show, onHide, initialData, onSave }: 
 			},
 			body: JSON.stringify(data)
 		},)
+
+		if (!response.ok) {
+			const message = await response.text();
+			throw new Error(message || 'Failed to save profile changes');
+		}
+
+		const saved = await response.json();
+		return {
+			profile_picture: saved.profile_picture ?? data.profile_picture,
+			height: saved.height ?? data.height,
+			weight: saved.weight ?? data.weight,
+			school: saved.school ?? data.school,
+			position: saved.position ?? data.position,
+			bio: saved.bio ?? data.bio,
+		};
 	}
 
-	const handleSave = () => {
-		updateData(formData)// Send `formData` to your API here when you're ready.
-		onSave(formData);
-		onHide();
+	const handleSave = async () => {
+		try {
+			const savedData = await updateData(formData);
+			onSave(savedData);
+			onHide();
+		} catch (error) {
+			setSaveError(error instanceof Error ? error.message : 'Failed to save profile changes');
+		}
 	};
 
 	return (
@@ -117,6 +138,7 @@ export default function EditProfileModal({ show, onHide, initialData, onSave }: 
 				</div>
 			</Modal.Body>
 			<Modal.Footer>
+				{saveError && <div className="text-danger me-auto">{saveError}</div>}
 				<Button className="ghost-button btn" onClick={onHide}>Cancel</Button>
 				<Button className="action-button btn" onClick={handleSave}>Save Changes</Button>
 			</Modal.Footer>
