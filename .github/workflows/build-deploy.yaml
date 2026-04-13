@@ -7,22 +7,22 @@ jobs:
     environment:
       name: Production - canadian-athlete-directory
     env:
-      POSTGRES_USER: ${{POSTGRES_USER}}
-      POSTGRES_PASSWORD: ${{POSTGRES_PASSWORD}}
-      POSTGRES_DB: ${{POSTGRES_DB}}
-      POSTGRES_URL: ${{POSTGRES_URL}}
-      MONGODB_URL: ${{MONGODB_URL}}
-      MONGODB_PW: ${{MONGODB_PW}}
-      ACCESS_TOKEN_EXPIRE_SECONDS: ${{ACCESS_TOKEN_EXPIRE_SECONDS}}
-      EMAIL_ACCESS_TOKEN_EXPIRE_MINUTES: ${{EMAIL_ACCESS_TOKEN_EXPIRE_MINUTES}}
-      TTL: ${{TTL}}
-      ALGORITHM: ${{ALGORITHM}}
-      VITE_BASE_API_URL: ${{VITE_BASE_API_URL}}
-      FRONTEND_BASE_URL: ${{FRONTEND_BASE_URL}}
-      FRONTEND_ORIGINS: ${{FRONTEND_ORIGINS}}
-      EMAIL: ${{EMAIL}}
-      SECRET_KEY: ${{SECRET_KEY}}
-      RESEND_API_KEY: ${{RESEND_API_KEYs}}
+      POSTGRES_USER: ${{secrets.POSTGRES_USER}}
+      POSTGRES_PASSWORD: ${{secrets.POSTGRES_PASSWORD}}
+      POSTGRES_DB: ${{secrets.POSTGRES_DB}}
+      POSTGRES_URL: ${{secrets.POSTGRES_URL}}
+      MONGODB_URL: ${{secrets.MONGODB_URL}}
+      MONGODB_PW: ${{secrets.MONGODB_PW}}
+      ACCESS_TOKEN_EXPIRE_SECONDS: ${{secrets.ACCESS_TOKEN_EXPIRE_SECONDS}}
+      EMAIL_ACCESS_TOKEN_EXPIRE_MINUTES: ${{secrets.EMAIL_ACCESS_TOKEN_EXPIRE_MINUTES}}
+      TTL: ${{secrets.TTL}}
+      ALGORITHM: ${{secrets.ALGORITHM}}
+      VITE_BASE_API_URL: ${{secrets.VITE_BASE_API_URL}}
+      FRONTEND_BASE_URL: ${{secrets.FRONTEND_BASE_URL}}
+      FRONTEND_ORIGINS: ${{secrets.FRONTEND_ORIGINS}}
+      EMAIL: ${{secrets.EMAIL}}
+      SECRET_KEY: ${{secrets.SECRET_KEY}}
+      RESEND_API_KEY: ${{secrets.RESEND_API_KEYs}}
 
     services:
       postgres:
